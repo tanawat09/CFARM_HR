@@ -24,7 +24,3 @@ services:
       - DB_USERNAME=itadmin
       - DB_PASSWORD=Noipalee@09
       - SESSION_DRIVER=file
-
-networks:
-  default:
-    driver: bridge

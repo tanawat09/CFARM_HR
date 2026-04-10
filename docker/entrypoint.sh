@@ -3,7 +3,7 @@ set -e
 
 cd /var/www
 
-# Generate .env from environment variables if it doesn't exist
+# Generate .env from environment variables
 if [ ! -f .env ]; then
     echo "APP_NAME=${APP_NAME:-Laravel}" > .env
     echo "APP_ENV=${APP_ENV:-production}" >> .env
@@ -35,7 +35,7 @@ mkdir -p bootstrap/cache
 chown -R www-data:www-data storage bootstrap/cache
 chmod -R 777 storage bootstrap/cache
 
-# Cache config for performance
+# Clear caches
 php artisan config:clear 2>&1 || true
 php artisan view:clear 2>&1 || true
 
@@ -44,10 +44,5 @@ echo "APP_URL: ${APP_URL}"
 echo "DB_HOST: ${DB_HOST}"
 echo "================================"
 
-# Start PHP-FPM first, then Nginx
-php-fpm -D
-sleep 1
-echo "PHP-FPM started"
-
-# Start nginx in foreground
-nginx -g 'daemon off;'
+# Start Apache in foreground (standard Docker way)
+exec apache2-foreground

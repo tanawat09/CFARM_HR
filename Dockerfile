@@ -1,13 +1,21 @@
-FROM php:8.3-fpm
+FROM php:8.3-apache
+
+# Enable Apache mod_rewrite
+RUN a2enmod rewrite
+
+# Set Apache document root
+ENV APACHE_DOCUMENT_ROOT=/var/www/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+# Allow .htaccess overrides
+RUN sed -ri -e 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    nginx \
-    build-essential \
     libpng-dev \
     libjpeg62-turbo-dev \
     libfreetype6-dev \
-    locales \
     zip \
     unzip \
     git \
@@ -37,9 +45,6 @@ RUN COMPOSER_MEMORY_LIMIT=-1 composer install --optimize-autoloader --no-dev --i
 # Set permissions
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache && \
     chmod -R 777 /var/www/storage /var/www/bootstrap/cache
-
-# Copy nginx config
-COPY docker/nginx.conf /etc/nginx/sites-available/default
 
 # Copy entrypoint and fix Windows line endings
 COPY docker/entrypoint.sh /entrypoint.sh
