@@ -22,7 +22,7 @@ class DashboardController extends Controller
             $endDate = Carbon::now()->format('Y-m-d');
 
             // Basic Stats
-            $totalEmployees = Employee::count();
+            $totalEmployees = Employee::whereIn('employment_status', ['active', 'probation'])->count();
             $totalCheckInsToday = Attendance::where('date', Carbon::today()->format('Y-m-d'))
                 ->whereIn('status', [AttendanceStatus::CHECKED_IN, AttendanceStatus::CHECKED_OUT])
                 ->count();
@@ -51,9 +51,6 @@ class DashboardController extends Controller
                     'label' => $dayLabel,
                     'on_time' => $onTime,
                     'late' => $late,
-                    // MVP Faked data for visual impact if empty
-                    'fake_on_time' => $onTime > 0 ? $onTime : rand((int)($totalEmployees * 0.6), (int)($totalEmployees * 0.8)),
-                    'fake_late' => $late > 0 ? $late : rand(0, (int)($totalEmployees * 0.15))
                 ];
             }
 
@@ -96,7 +93,9 @@ class DashboardController extends Controller
                         'status' => $a->status?->value ?? $a->status,
                         'is_late' => $a->is_late,
                     ]),
-                'departments' => \App\Models\Department::withCount('employees')->get()->map(fn($d) => [
+                'departments' => \App\Models\Department::withCount(['employees' => function($query) {
+                    $query->whereIn('employment_status', ['active', 'probation']);
+                }])->get()->map(fn($d) => [
                     'name' => $d->name,
                     'count' => $d->employees_count,
                 ]),
@@ -105,7 +104,12 @@ class DashboardController extends Controller
         }
 
         if ($user->role->value === 'supervisor') {
-            $subordinates = $employee ? $employee->subordinates()->with(['department', 'position', 'user', 'shift'])->get() : collect([]);
+            $subordinates = $employee 
+                ? $employee->subordinates()
+                    ->whereIn('employment_status', ['active', 'probation'])
+                    ->with(['department', 'position', 'user', 'shift'])
+                    ->get() 
+                : collect([]);
             $subordinateIds = $subordinates->pluck('id');
 
             $today = Carbon::today()->format('Y-m-d');

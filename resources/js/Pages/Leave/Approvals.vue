@@ -106,7 +106,7 @@ const submitReject = () => {
                                     <th class="p-4 font-bold rounded-tl-2xl">พนักงาน</th>
                                     <th class="p-4 font-bold">ประเภทการลา</th>
                                     <th class="p-4 font-bold">วันที่ลา</th>
-                                    <th class="p-4 font-bold text-center">จำนวนวัน</th>
+                                    <th class="p-4 font-bold text-center">ปริมาณที่ลา</th>
                                     <th class="p-4 font-bold">เหตุผล</th>
                                     <th v-if="currentTab !== 'pending'" class="p-4 font-bold">ผู้อนุมัติ</th>
                                     <th v-if="currentTab === 'pending'" class="p-4 font-bold text-center rounded-tr-2xl">จัดการ</th>
@@ -130,20 +130,31 @@ const submitReject = () => {
 
                                     <!-- Leave Type -->
                                     <td class="p-4">
-                                        <span class="font-bold text-slate-700">{{ getLeaveLabel(leave.leave_type) }}</span>
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-bold text-slate-700">{{ getLeaveLabel(leave.leave_type) }}</span>
+                                            <span v-if="leave.leave_format === 'hourly'" class="text-[10px] bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded font-bold uppercase tracking-tighter">รายชั่วโมง</span>
+                                        </div>
                                     </td>
 
                                     <!-- Dates -->
                                     <td class="p-4">
-                                        <div class="text-slate-700">{{ formatDate(leave.start_date) }}</div>
-                                        <div class="text-xs text-slate-400">ถึง {{ formatDate(leave.end_date) }}</div>
+                                        <div class="flex flex-col">
+                                            <div class="flex items-center gap-1 text-slate-700 font-medium">
+                                                <span>{{ formatDate(leave.start_date) }}</span>
+                                                <span v-if="leave.leave_format === 'hourly'" class="text-xs font-bold text-indigo-600">({{ leave.start_time?.substring(0,5) }} - {{ leave.end_time?.substring(0,5) }} น.)</span>
+                                            </div>
+                                            <div v-if="leave.leave_format === 'daily'" class="text-xs text-slate-400">ถึง {{ formatDate(leave.end_date) }}</div>
+                                        </div>
                                     </td>
 
                                     <!-- Total Days -->
                                     <td class="p-4 text-center">
-                                        <span class="inline-flex items-center justify-center w-10 h-10 bg-indigo-50 text-indigo-700 font-extrabold rounded-xl border border-indigo-100">
-                                            {{ leave.total_days }}
-                                        </span>
+                                        <div class="flex flex-col items-center">
+                                            <span class="inline-flex items-center justify-center min-w-[32px] px-2 h-8 bg-indigo-50 text-indigo-700 font-extrabold rounded-lg border border-indigo-100 text-sm">
+                                                {{ leave.total_days }}
+                                            </span>
+                                            <span class="text-[10px] text-slate-400 font-bold uppercase mt-1">วัน</span>
+                                        </div>
                                     </td>
 
                                     <!-- Reason -->

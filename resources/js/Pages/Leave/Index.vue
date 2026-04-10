@@ -13,7 +13,7 @@ const tableColumns = [
     { key: 'leave_type', label: 'ประเภทการลา', class: 'rounded-tl-2xl' },
     { key: 'start_date', label: 'วันที่เริ่มต้น' },
     { key: 'end_date', label: 'วันที่สิ้นสุด' },
-    { key: 'total_days', label: 'จำนวนวัน', class: 'text-center', cellClass: 'text-center font-bold text-slate-700' },
+    { key: 'total_days', label: 'ปริมาณที่ลา', class: 'text-center', cellClass: 'text-center font-bold text-slate-700' },
     { key: 'status', label: 'สถานะ' }
 ];
 
@@ -114,16 +114,26 @@ const borderColors = ['border-indigo-500','border-emerald-500','border-amber-500
 
                     <DataTable :columns="tableColumns" :data="leaves">
                         <template #cell-leave_type="{ item }">
-                            <div class="font-bold text-slate-800">{{ getLeaveLabel(item.leave_type?.value || item.leave_type) }}</div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-slate-800">{{ getLeaveLabel(item.leave_type?.value || item.leave_type) }}</span>
+                                <span v-if="item.leave_format === 'hourly'" class="text-[10px] bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded font-bold uppercase tracking-tighter">รายชั่วโมง</span>
+                            </div>
                             <div v-if="item.reason" class="text-xs text-slate-400 mt-0.5 truncate max-w-[200px]">{{ item.reason }}</div>
                         </template>
 
                         <template #cell-start_date="{ item }">
-                            {{ formatDate(item.start_date) }}
+                            <div>{{ formatDate(item.start_date) }}</div>
+                            <div v-if="item.leave_format === 'hourly' && item.start_time" class="text-xs font-bold text-indigo-600">
+                                🕒 {{ item.start_time.substring(0, 5) }} น.
+                            </div>
                         </template>
 
                         <template #cell-end_date="{ item }">
-                            {{ formatDate(item.end_date) }}
+                            <div v-if="item.leave_format === 'daily'">{{ formatDate(item.end_date) }}</div>
+                            <div v-else-if="item.leave_format === 'hourly' && item.end_time" class="text-xs font-bold text-indigo-600">
+                                🕒 {{ item.end_time.substring(0, 5) }} น.
+                            </div>
+                            <div v-else>-</div>
                         </template>
 
                         <template #cell-status="{ item }">

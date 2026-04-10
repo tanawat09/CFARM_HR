@@ -28,7 +28,7 @@ const getMaxChartValue = () => {
     if (!props.chartData) return 10;
     let max = 10;
     props.chartData.forEach(d => {
-        const total = (d.on_time || d.fake_on_time) + (d.late || d.fake_late);
+        const total = (d.on_time || 0) + (d.late || 0);
         if (total > max) max = total;
     });
     return max;
@@ -190,14 +190,14 @@ const maxDeptCount = computed(() => {
                                         <!-- Tooltip -->
                                         <div class="absolute -top-14 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white text-[10px] py-1.5 px-3 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all whitespace-nowrap z-20 pointer-events-none">
                                             <div class="font-bold border-b border-white/20 mb-1 pb-1">{{ item.date }}</div>
-                                            <div class="text-emerald-300">ปกติ: {{ item.on_time || item.fake_on_time }}</div>
-                                            <div class="text-rose-300">สาย: {{ item.late || item.fake_late }}</div>
+                                            <div class="text-emerald-300">ปกติ: {{ item.on_time || 0 }}</div>
+                                            <div class="text-rose-300">สาย: {{ item.late || 0 }}</div>
                                         </div>
                                         <div class="w-full rounded-t-md bar-late transition-all duration-700 ease-out hover:brightness-110" 
-                                            :style="{ height: `${((item.late || item.fake_late) / maxVal) * 100}%` }">
+                                            :style="{ height: `${((item.late || 0) / maxVal) * 100}%` }">
                                         </div>
                                         <div class="w-full rounded-b-md bar-ontime transition-all duration-700 ease-out hover:brightness-110" 
-                                            :style="{ height: `${((item.on_time || item.fake_on_time) / maxVal) * 100}%` }">
+                                            :style="{ height: `${((item.on_time || 0) / maxVal) * 100}%` }">
                                         </div>
                                     </div>
                                     <div class="text-[11px] font-bold text-slate-400 mt-2 h-5">{{ item.label }}</div>
