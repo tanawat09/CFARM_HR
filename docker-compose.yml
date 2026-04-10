@@ -8,6 +8,8 @@ services:
     image: cfarm-hr-app:latest
     container_name: cfarm_app
     restart: unless-stopped
+    ports:
+      - "8018:80"
     environment:
       - APP_NAME=CFARM_HR
       - APP_ENV=production
@@ -22,31 +24,7 @@ services:
       - DB_USERNAME=itadmin
       - DB_PASSWORD=Noipalee@09
       - SESSION_DRIVER=file
-    volumes:
-      - public_files:/var/www/public
-      - nginx_conf:/var/www/docker
-    networks:
-      - cfarm-network
-
-  webserver:
-    image: nginx:alpine
-    container_name: cfarm_nginx
-    restart: unless-stopped
-    ports:
-      - "8018:80"
-    volumes:
-      - public_files:/var/www/public
-      - nginx_conf:/var/www/docker
-    command: /bin/sh -c "cp /var/www/docker/nginx.conf /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
-    depends_on:
-      - app
-    networks:
-      - cfarm-network
 
 networks:
-  cfarm-network:
+  default:
     driver: bridge
-
-volumes:
-  public_files:
-  nginx_conf:
