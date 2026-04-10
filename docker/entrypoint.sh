@@ -36,13 +36,18 @@ chown -R www-data:www-data storage bootstrap/cache
 chmod -R 777 storage bootstrap/cache
 
 # Cache config for performance
-php artisan config:clear
-php artisan view:clear
+php artisan config:clear 2>&1 || true
+php artisan view:clear 2>&1 || true
 
 echo "=== CFARM HR System Starting ==="
 echo "APP_URL: ${APP_URL}"
 echo "DB_HOST: ${DB_HOST}"
 echo "================================"
 
-# Start supervisor (manages both nginx and php-fpm)
-exec /usr/bin/supervisord -c /etc/supervisor/conf.d/app.conf
+# Start PHP-FPM first, then Nginx
+php-fpm -D
+sleep 1
+echo "PHP-FPM started"
+
+# Start nginx in foreground
+nginx -g 'daemon off;'

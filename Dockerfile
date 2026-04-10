@@ -14,7 +14,6 @@ RUN apt-get update && apt-get install -y \
     curl \
     libzip-dev \
     libonig-dev \
-    supervisor \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
@@ -42,23 +41,9 @@ RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache && \
 # Copy nginx config
 COPY docker/nginx.conf /etc/nginx/sites-available/default
 
-# Create supervisord config
-RUN echo '[supervisord]'                        > /etc/supervisor/conf.d/app.conf && \
-    echo 'nodaemon=true'                       >> /etc/supervisor/conf.d/app.conf && \
-    echo ''                                    >> /etc/supervisor/conf.d/app.conf && \
-    echo '[program:php-fpm]'                   >> /etc/supervisor/conf.d/app.conf && \
-    echo 'command=php-fpm -F'                  >> /etc/supervisor/conf.d/app.conf && \
-    echo 'autostart=true'                      >> /etc/supervisor/conf.d/app.conf && \
-    echo 'autorestart=true'                    >> /etc/supervisor/conf.d/app.conf && \
-    echo ''                                    >> /etc/supervisor/conf.d/app.conf && \
-    echo '[program:nginx]'                     >> /etc/supervisor/conf.d/app.conf && \
-    echo 'command=nginx -g "daemon off;"'      >> /etc/supervisor/conf.d/app.conf && \
-    echo 'autostart=true'                      >> /etc/supervisor/conf.d/app.conf && \
-    echo 'autorestart=true'                    >> /etc/supervisor/conf.d/app.conf
-
-# Copy entrypoint
+# Copy entrypoint and fix Windows line endings
 COPY docker/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN sed -i 's/\r$//' /entrypoint.sh && chmod +x /entrypoint.sh
 
 EXPOSE 80
 
