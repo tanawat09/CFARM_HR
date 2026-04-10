@@ -33,8 +33,11 @@ WORKDIR /var/www
 # Copy existing application directory
 COPY . /var/www
 
+# Install PHP dependencies
+RUN composer install --optimize-autoloader --no-dev
+
 # Set permissions
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache /var/www/vendor
 
 # Expose port and start php-fpm server
 EXPOSE 9000
