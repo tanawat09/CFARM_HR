@@ -5,18 +5,38 @@ import { Link } from '@inertiajs/vue3';
 
 <template>
     <div
-        class="flex min-h-screen flex-col items-center bg-gray-100 pt-6 sm:justify-center sm:pt-0 dark:bg-gray-900"
+        class="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-amber-50 dark:from-gray-900 dark:via-emerald-950 dark:to-gray-900 font-sans selection:bg-emerald-500 selection:text-white"
     >
-        <div>
-            <Link href="/">
-                <ApplicationLogo class="h-20 w-20 fill-current text-gray-500" />
-            </Link>
+        <!-- Abstract gradient orbs -->
+        <div class="absolute top-0 right-0 -translate-y-12 translate-x-1/3 opacity-60 dark:opacity-40">
+            <div class="h-[500px] w-[500px] rounded-full bg-emerald-300 blur-[80px] dark:bg-emerald-800"></div>
+        </div>
+        <div class="absolute bottom-0 left-0 translate-y-1/3 -translate-x-1/3 opacity-60 dark:opacity-40">
+            <div class="h-[500px] w-[500px] rounded-full bg-amber-200 blur-[80px] dark:bg-amber-900/50"></div>
         </div>
 
-        <div
-            class="mt-6 w-full overflow-hidden bg-white px-6 py-4 shadow-md sm:max-w-md sm:rounded-lg dark:bg-gray-800"
-        >
-            <slot />
+        <!-- Main Card Container -->
+        <div class="relative z-10 w-full max-w-md px-6 py-12">
+            <!-- Logo Section -->
+            <div class="mb-8 flex justify-center">
+                <Link href="/" class="group">
+                    <ApplicationLogo
+                        class="h-20 w-auto max-w-full drop-shadow-md transition-all duration-500 group-hover:scale-105 group-hover:drop-shadow-xl"
+                    />
+                </Link>
+            </div>
+
+            <!-- Glassmorphism Card -->
+            <div
+                class="overflow-hidden rounded-3xl border border-white/60 bg-white/70 p-8 shadow-2xl shadow-emerald-500/10 backdrop-blur-xl transition-all duration-300 hover:shadow-emerald-500/20 sm:p-10 dark:border-gray-700/50 dark:bg-gray-800/80 dark:shadow-black/40"
+            >
+                <slot />
+            </div>
+            
+            <!-- Footer text -->
+            <div class="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                &copy; {{ new Date().getFullYear() }} CFARM. All rights reserved.
+            </div>
         </div>
     </div>
 </template>

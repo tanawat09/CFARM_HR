@@ -33,66 +33,72 @@ const submit = () => {
     <GuestLayout>
         <Head title="Log in" />
 
-        <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
+        <div v-if="status" class="mb-4 rounded-lg bg-green-50 p-4 text-sm font-medium text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400">
             {{ status }}
         </div>
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
+        <div class="mb-8 text-center">
+            <h2 class="mb-2 text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl dark:text-white">
+                Welcome Back
+            </h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+                Please sign in to access the CFARM HR admin dashboard
+            </p>
+        </div>
 
+        <form @submit.prevent="submit" class="space-y-6">
+            <div>
+                <InputLabel for="email" value="Email" class="text-gray-700 dark:text-gray-300" />
                 <TextInput
                     id="email"
                     type="email"
-                    class="mt-1 block w-full"
+                    class="mt-1 block w-full border-gray-300 focus:border-emerald-500 focus:ring-emerald-500 dark:border-gray-700 dark:bg-gray-900/50 dark:focus:border-emerald-500 dark:focus:ring-emerald-500 transition-colors"
                     v-model="form.email"
                     required
                     autofocus
                     autocomplete="username"
+                    placeholder="admin@cfarm.com"
                 />
-
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
 
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-
+            <div>
+                <div class="flex items-center justify-between">
+                    <InputLabel for="password" value="Password" class="text-gray-700 dark:text-gray-300" />
+                    <Link
+                        v-if="canResetPassword"
+                        :href="route('password.request')"
+                        class="text-xs font-semibold text-emerald-600 transition-colors hover:text-emerald-500 focus:outline-none dark:text-emerald-500 dark:hover:text-emerald-400"
+                    >
+                        Forgot password?
+                    </Link>
+                </div>
                 <TextInput
                     id="password"
                     type="password"
-                    class="mt-1 block w-full"
+                    class="mt-1 block w-full border-gray-300 focus:border-emerald-500 focus:ring-emerald-500 dark:border-gray-700 dark:bg-gray-900/50 dark:focus:border-emerald-500 dark:focus:ring-emerald-500 transition-colors"
                     v-model="form.password"
                     required
                     autocomplete="current-password"
+                    placeholder="••••••••"
                 />
-
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
-            <div class="mt-4 block">
+            <div class="block">
                 <label class="flex items-center">
-                    <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ms-2 text-sm text-gray-600 dark:text-gray-400"
-                        >Remember me</span
-                    >
+                    <Checkbox name="remember" v-model:checked="form.remember" class="text-emerald-600 focus:ring-emerald-500" />
+                    <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">Remember me</span>
                 </label>
             </div>
 
-            <div class="mt-4 flex items-center justify-end">
-                <Link
-                    v-if="canResetPassword"
-                    :href="route('password.request')"
-                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
-                >
-                    Forgot your password?
-                </Link>
-
+            <div>
                 <PrimaryButton
-                    class="ms-4"
+                    class="w-full justify-center bg-emerald-600 py-3 font-semibold text-white transition-all hover:bg-emerald-700 focus:bg-emerald-700 active:bg-emerald-800 dark:bg-emerald-500 dark:hover:bg-emerald-600"
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                 >
-                    Log in
+                    Sign In
                 </PrimaryButton>
             </div>
         </form>

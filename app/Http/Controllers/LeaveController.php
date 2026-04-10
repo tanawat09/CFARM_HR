@@ -127,23 +127,47 @@ class LeaveController extends Controller
         }
 
         // --- Dynamic validation rules ---
+        $isHourly = $request->input('leave_format') === 'hourly';
+
         $rules = [
-            'leave_type'  => 'required|string|exists:leave_policies,key',
-            'start_date'  => 'required|date|after_or_equal:today',
-            'end_date'    => 'required|date|after_or_equal:start_date',
+            'leave_type'   => 'required|string|exists:leave_policies,key',
+            'leave_format' => 'required|in:daily,hourly',
+            'start_date'   => 'required|date|after_or_equal:today',
         ];
+
+        if ($isHourly) {
+            $rules['start_time'] = 'required|date_format:H:i';
+            $rules['end_time']   = 'required|date_format:H:i|after:start_time';
+        } else {
+            $rules['end_date']   = 'required|date|after_or_equal:start_date';
+        }
 
         // Reason
         $rules['reason'] = $policy->requires_reason ? 'required|string|max:1000' : 'nullable|string|max:1000';
 
         // Total days
         $totalDays = 0;
-        if ($request->start_date && $request->end_date) {
+        if ($isHourly) {
             try {
-                $totalDays = Carbon::parse($request->start_date)->diffInDays(Carbon::parse($request->end_date)) + 1;
+                // For hourly leave, end_date is the same as start_date.
+                // Calculate hours: diffInMinutes / 60, then convert to days by diving by 8.
+                $start = Carbon::parse($request->start_date . ' ' . $request->start_time);
+                $end = Carbon::parse($request->start_date . ' ' . $request->end_time);
+                $diffHours = $start->diffInMinutes($end) / 60;
+                $totalDays = round($diffHours / 8, 3);
             } catch (\Exception $e) {
                 $totalDays = 0;
             }
+            $endDate = $request->start_date;
+        } else {
+            if ($request->start_date && $request->end_date) {
+                try {
+                    $totalDays = Carbon::parse($request->start_date)->diffInDays(Carbon::parse($request->end_date)) + 1;
+                } catch (\Exception $e) {
+                    $totalDays = 0;
+                }
+            }
+            $endDate = $request->end_date;
         }
 
         // Attachment
@@ -188,8 +212,11 @@ class LeaveController extends Controller
         LeaveRequest::create([
             'employee_id'     => $employee->id,
             'leave_type'      => $validated['leave_type'],
+            'leave_format'    => $validated['leave_format'],
             'start_date'      => $validated['start_date'],
-            'end_date'        => $validated['end_date'],
+            'end_date'        => $endDate,
+            'start_time'      => $isHourly ? $validated['start_time'] : null,
+            'end_time'        => $isHourly ? $validated['end_time'] : null,
             'total_days'      => $totalDays,
             'reason'          => $validated['reason'] ?? null,
             'status'          => LeaveStatus::PENDING->value,

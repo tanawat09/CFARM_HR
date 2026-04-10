@@ -11,8 +11,11 @@ const props = defineProps({
 
 const form = useForm({
     leave_type: props.leaveTypes?.[0]?.key || '',
+    leave_format: 'daily',
     start_date: '',
     end_date: '',
+    start_time: '08:00',
+    end_time: '10:00',
     reason: '',
     attachment: null,
 });
@@ -25,11 +28,32 @@ const currentStats = computed(() => {
 });
 
 const totalDays = computed(() => {
-    if (!form.start_date || !form.end_date) return 0;
-    const start = new Date(form.start_date);
-    const end = new Date(form.end_date);
-    if (end < start) return 0;
-    return Math.floor((end - start) / (1000 * 60 * 60 * 24)) + 1;
+    if (form.leave_format === 'hourly') {
+        if (!form.start_date || !form.start_time || !form.end_time) return 0;
+        const [sh, sm] = form.start_time.split(':').map(Number);
+        const [eh, em] = form.end_time.split(':').map(Number);
+        const diffMinutes = (eh * 60 + em) - (sh * 60 + sm);
+        if (diffMinutes <= 0) return 0;
+        return Number((diffMinutes / 60 / 8).toFixed(3));
+    } else {
+        if (!form.start_date || !form.end_date) return 0;
+        const start = new Date(form.start_date);
+        const end = new Date(form.end_date);
+        if (end < start) return 0;
+        return Math.floor((end - start) / (1000 * 60 * 60 * 24)) + 1;
+    }
+});
+
+const totalHours = computed(() => {
+    if (form.leave_format !== 'hourly') return 0;
+    if (!form.start_date || !form.start_time || !form.end_time) return 0;
+    const [sh, sm] = form.start_time.split(':').map(Number);
+    const [eh, em] = form.end_time.split(':').map(Number);
+    const diffMinutes = (eh * 60 + em) - (sh * 60 + sm);
+    if (diffMinutes <= 0) return 0;
+    const h = Math.floor(diffMinutes / 60);
+    const m = diffMinutes % 60;
+    return `${h} ชม. ${m > 0 ? m + ' นาที' : ''}`;
 });
 
 const reasonRequired = computed(() => currentStats.value?.requires_reason ?? true);
@@ -136,24 +160,52 @@ const submit = () => {
                             </div>
                         </div>
 
-                        <!-- Dates -->
+                        <!-- Leave Format Option -->
+                        <div v-if="!isBlocked" class="bg-slate-50 p-4 border border-slate-200 rounded-2xl flex items-center justify-between">
+                            <span class="font-bold text-slate-700 text-sm">รูปแบบการลา:</span>
+                            <div class="flex bg-white rounded-lg p-1 border border-slate-200 shadow-sm">
+                                <button type="button" @click="form.leave_format = 'daily'" :class="{'bg-indigo-600 text-white shadow': form.leave_format === 'daily', 'text-slate-600 hover:bg-slate-100': form.leave_format !== 'daily'}" class="px-4 py-2 text-sm font-bold rounded-md transition-all">เต็มวัน / หลายวัน</button>
+                                <button type="button" @click="form.leave_format = 'hourly'" :class="{'bg-indigo-600 text-white shadow': form.leave_format === 'hourly', 'text-slate-600 hover:bg-slate-100': form.leave_format !== 'hourly'}" class="px-4 py-2 text-sm font-bold rounded-md transition-all">รายชั่วโมง</button>
+                            </div>
+                        </div>
+
+                        <!-- Dates / Times -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block font-bold text-sm text-slate-700 mb-2">วันที่เริ่มต้น <span class="text-rose-500">*</span></label>
+                                <label class="block font-bold text-sm text-slate-700 mb-2">{{ form.leave_format === 'hourly' ? 'วันที่ขอลา' : 'วันที่เริ่มต้น' }} <span class="text-rose-500">*</span></label>
                                 <input type="date" v-model="form.start_date" class="w-full rounded-xl border-slate-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition" required>
                                 <InputError :message="form.errors.start_date" class="mt-2" />
                             </div>
-                            <div>
+                            
+                            <!-- Daily End Date -->
+                            <div v-if="form.leave_format === 'daily'">
                                 <label class="block font-bold text-sm text-slate-700 mb-2">ถึงวันที่ <span class="text-rose-500">*</span></label>
                                 <input type="date" v-model="form.end_date" :min="form.start_date" class="w-full rounded-xl border-slate-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition" required>
                                 <InputError :message="form.errors.end_date" class="mt-2" />
                             </div>
+
+                            <!-- Hourly Times -->
+                            <div v-if="form.leave_format === 'hourly'" class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block font-bold text-sm text-slate-700 mb-2">ตั้งแต่เวลา <span class="text-rose-500">*</span></label>
+                                    <input type="time" v-model="form.start_time" class="w-full rounded-xl border-slate-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition" required>
+                                    <InputError :message="form.errors.start_time" class="mt-2" />
+                                </div>
+                                <div>
+                                    <label class="block font-bold text-sm text-slate-700 mb-2">ถึงเวลา <span class="text-rose-500">*</span></label>
+                                    <input type="time" v-model="form.end_time" class="w-full rounded-xl border-slate-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition" required>
+                                    <InputError :message="form.errors.end_time" class="mt-2" />
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Total days preview -->
-                        <div v-if="totalDays > 0" class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center justify-between">
-                            <span class="text-sm font-bold text-slate-600">📅 จำนวนวันที่ขอลา</span>
-                            <span class="text-lg font-extrabold text-indigo-600">{{ totalDays }} วัน</span>
+                        <div v-if="totalDays > 0" class="bg-indigo-50/50 border border-slate-200 rounded-xl p-3 flex flex-col md:flex-row items-center justify-between gap-2">
+                            <span class="text-sm font-bold text-slate-600">📅 ปริมาณวันที่หักโควตาลา</span>
+                            <span class="text-lg font-extrabold text-indigo-600">
+                                <span v-if="form.leave_format === 'hourly'" class="text-sm font-semibold text-slate-500 mr-2">({{ totalHours }})</span>
+                                {{ totalDays }} วัน
+                            </span>
                         </div>
 
                         <!-- Reason -->
