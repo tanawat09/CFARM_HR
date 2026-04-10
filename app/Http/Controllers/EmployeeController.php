@@ -54,8 +54,12 @@ class EmployeeController extends Controller
             'branches' => Worksite::all(),
             'shifts' => Shift::all(),
             'supervisors' => Employee::select('id', 'first_name', 'last_name')
-                ->whereHas('department', function($q) {
-                    $q->where('name', 'บริหาร');
+                ->where(function($q) {
+                    $q->whereHas('department', function($q_dep) {
+                        $q_dep->where('name', 'บริหาร');
+                    })->orWhereHas('position', function($q_pos) {
+                        $q_pos->where('name', 'like', '%ผู้จัดการฝ่าย%');
+                    });
                 })->get(),
             'employmentStatuses' => array_column(EmploymentStatus::cases(), 'value'),
             'checkInModes' => array_column(CheckInMode::cases(), 'value')
@@ -126,8 +130,12 @@ class EmployeeController extends Controller
             'shifts'      => Shift::all(),
             'supervisors' => Employee::select('id', 'first_name', 'last_name')
                 ->where('id', '!=', $employee->id)
-                ->whereHas('department', function($q) {
-                    $q->where('name', 'บริหาร');
+                ->where(function($q) {
+                    $q->whereHas('department', function($q_dep) {
+                        $q_dep->where('name', 'บริหาร');
+                    })->orWhereHas('position', function($q_pos) {
+                        $q_pos->where('name', 'like', '%ผู้จัดการฝ่าย%');
+                    });
                 })->get(),
             'employmentStatuses' => array_map(fn($s) => ['value' => $s->value, 'label' => $s->label()], EmploymentStatus::cases()),
         ]);
