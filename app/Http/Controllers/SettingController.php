@@ -1,0 +1,79 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use App\Models\LeavePolicy;
+
+class SettingController extends Controller
+{
+    public function leaveSettings()
+    {
+        $policies = LeavePolicy::orderBy('sort_order')->get();
+
+        return Inertia::render('Settings/Leave', [
+            'policies' => $policies,
+        ]);
+    }
+
+    public function storePolicy(Request $request)
+    {
+        $validated = $request->validate([
+            'key'   => 'required|string|max:50|unique:leave_policies,key|regex:/^[a-z_]+$/',
+            'name'  => 'required|string|max:100',
+            'icon'  => 'required|string|max:10',
+            'quota_days' => 'required|integer|min:0|max:365',
+            'requires_reason' => 'boolean',
+            'requires_attachment_after_days' => 'nullable|integer|min:1|max:30',
+            'probation_allowed' => 'boolean',
+            'is_tenure_based' => 'boolean',
+            'tenure_threshold_years' => 'nullable|integer|min:1|max:50',
+            'tenure_bonus_days' => 'nullable|integer|min:0|max:365',
+            'is_active' => 'boolean',
+        ], [
+            'key.regex' => 'รหัสต้องเป็นภาษาอังกฤษตัวเล็กและขีดล่างเท่านั้น (เช่น sick_leave)',
+            'key.unique' => 'รหัสนี้ถูกใช้งานแล้ว',
+        ]);
+
+        $maxSort = LeavePolicy::max('sort_order') ?? 0;
+        $validated['sort_order'] = $maxSort + 1;
+
+        LeavePolicy::create($validated);
+
+        return redirect()->back()->with('message', 'เพิ่มประเภทการลาเรียบร้อยแล้ว');
+    }
+
+    public function updatePolicy(Request $request, LeavePolicy $policy)
+    {
+        $validated = $request->validate([
+            'name'  => 'required|string|max:100',
+            'icon'  => 'required|string|max:10',
+            'quota_days' => 'required|integer|min:0|max:365',
+            'requires_reason' => 'boolean',
+            'requires_attachment_after_days' => 'nullable|integer|min:1|max:30',
+            'probation_allowed' => 'boolean',
+            'is_tenure_based' => 'boolean',
+            'tenure_threshold_years' => 'nullable|integer|min:1|max:50',
+            'tenure_bonus_days' => 'nullable|integer|min:0|max:365',
+            'is_active' => 'boolean',
+        ]);
+
+        $policy->update($validated);
+
+        return redirect()->back()->with('message', 'อัพเดทประเภทการลาเรียบร้อย');
+    }
+
+    public function destroyPolicy(LeavePolicy $policy)
+    {
+        // Prevent deleting built-in types that have existing leave_requests
+        $usedCount = \App\Models\LeaveRequest::where('leave_type', $policy->key)->count();
+        if ($usedCount > 0) {
+            return redirect()->back()->withErrors(['delete' => "ไม่สามารถลบได้ เนื่องจากมีใบลาที่ใช้ประเภทนี้อยู่ {$usedCount} รายการ กรุณาปิดการใช้งานแทน"]);
+        }
+
+        $policy->delete();
+
+        return redirect()->back()->with('message', 'ลบประเภทการลาเรียบร้อย');
+    }
+}
