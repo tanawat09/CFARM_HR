@@ -38,7 +38,8 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN COMPOSER_MEMORY_LIMIT=-1 composer install --optimize-autoloader --no-dev --ignore-platform-reqs --no-interaction --no-progress
 
 # Set permissions
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache /var/www/vendor
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache /var/www/vendor && \
+    chmod -R 777 /var/www/storage /var/www/bootstrap/cache
 
 # Expose port and start php-fpm server
 EXPOSE 9000

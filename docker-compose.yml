@@ -23,7 +23,7 @@ services:
       - DB_PASSWORD=Noipalee@09
       - SESSION_DRIVER=file
     volumes:
-      - cfarm-data-v2:/var/www
+      - cfarm-data-v3:/var/www
     networks:
       - cfarm-network
 
@@ -34,7 +34,7 @@ services:
     ports:
       - "8018:80"
     volumes:
-      - cfarm-data-v2:/var/www
+      - cfarm-data-v3:/var/www
     command: /bin/sh -c "cp /var/www/docker/nginx.conf /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
     depends_on:
       - app
@@ -46,4 +46,4 @@ networks:
     driver: bridge
 
 volumes:
-  cfarm-data-v2:
+  cfarm-data-v3:
