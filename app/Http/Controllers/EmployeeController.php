@@ -107,12 +107,10 @@ class EmployeeController extends Controller
             'hire_date' => $validated['hire_date'],
         ]);
 
-        // If a supervisor was assigned, ensure their user role is set to supervisor
+        // If a supervisor was assigned, trigger role sync (handled by model event)
         if (!empty($validated['supervisor_id'])) {
             $supervisor = Employee::find($validated['supervisor_id']);
-            if ($supervisor && $supervisor->user) {
-                $supervisor->user->update(['role' => UserRole::SUPERVISOR->value]);
-            }
+            $supervisor?->save(); // Triggers syncUserRole
         }
 
         return redirect()->route('employees.index')->with('message', 'เพิ่มพนักงานสำเร็จแล้ว');
@@ -159,12 +157,10 @@ class EmployeeController extends Controller
 
         $employee->update($validated);
 
-        // If a new supervisor was assigned, update their role to supervisor
+        // If a new supervisor was assigned, trigger role sync (handled by model event)
         if (!empty($validated['supervisor_id'])) {
             $newSupervisor = Employee::find($validated['supervisor_id']);
-            if ($newSupervisor && $newSupervisor->user) {
-                $newSupervisor->user->update(['role' => UserRole::SUPERVISOR->value]);
-            }
+            $newSupervisor?->save();
         }
 
         // Update password if provided
