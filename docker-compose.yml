@@ -10,7 +10,7 @@ services:
     restart: unless-stopped
     working_dir: /var/www
     volumes:
-      - cfarm-data:/var/www
+      - cfarm-data-v2:/var/www
     networks:
       - cfarm-network
 
@@ -21,7 +21,7 @@ services:
     ports:
       - "8018:80"
     volumes:
-      - cfarm-data:/var/www
+      - cfarm-data-v2:/var/www
     command: /bin/sh -c "cp /var/www/docker/nginx.conf /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
     depends_on:
       - app
@@ -33,4 +33,4 @@ networks:
     driver: bridge
 
 volumes:
-  cfarm-data:
+  cfarm-data-v2:
