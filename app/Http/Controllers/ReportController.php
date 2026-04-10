@@ -15,6 +15,9 @@ class ReportController extends Controller
     public function index(Request $request)
     {
         $monthParam = $request->input('month', Carbon::now()->format('Y-m'));
+        $departmentId = $request->input('department_id');
+        $search = $request->input('search');
+
         try {
             $date = Carbon::createFromFormat('Y-m', $monthParam);
         } catch (\Exception $e) {
@@ -22,64 +25,91 @@ class ReportController extends Controller
             $monthParam = $date->format('Y-m');
         }
         
-        $startDate = $date->copy()->startOfMonth()->format('Y-m-d');
-        $endDate = $date->copy()->endOfMonth()->format('Y-m-d');
+        $startDate = $date->copy()->startOfMonth();
+        $endDate = $date->copy()->endOfMonth();
 
-        // Basic Stats
-        $totalEmployees = Employee::count();
-        $totalCheckIns = Attendance::whereBetween('date', [$startDate, $endDate])->count();
-        $totalLates = Attendance::whereBetween('date', [$startDate, $endDate])->where('is_late', true)->count();
+        // 1. Employee Context Filter (Calculate based on who is "working")
+        $employeeQuery = Employee::query()
+            ->whereIn('employment_status', [\App\Enums\EmploymentStatus::ACTIVE->value, \App\Enums\EmploymentStatus::PROBATION->value]);
+        
+        if ($departmentId) {
+            $employeeQuery->where('department_id', $departmentId);
+        }
+        
+        if ($search) {
+            $employeeQuery->where(function($q) use ($search) {
+                $q->where('first_name', 'like', "%{$search}%")
+                  ->orWhere('last_name', 'like', "%{$search}%")
+                  ->orWhere('employee_code', 'like', "%{$search}%");
+            });
+        }
+
+        $totalEmployees = (clone $employeeQuery)->count();
+        $employeeIds = (clone $employeeQuery)->pluck('id');
+
+        // 2. Attendance Stats for this group
+        $attendanceQuery = Attendance::whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+            ->whereIn('employee_id', $employeeIds);
+
+        $totalCheckIns = (clone $attendanceQuery)->count();
+        $totalLates = (clone $attendanceQuery)->where('is_late', true)->count();
+        
         $totalLeaves = LeaveRequest::where('status', 'approved')
+            ->whereIn('employee_id', $employeeIds)
             ->where(function($query) use ($startDate, $endDate) {
-                $query->whereBetween('start_date', [$startDate, $endDate])
-                      ->orWhereBetween('end_date', [$startDate, $endDate]);
+                $query->whereBetween('start_date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+                      ->orWhereBetween('end_date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')]);
             })->count();
 
-        // Chart Data: Group attendances by date for this month
-        $dailyData = Attendance::select('date', DB::raw('count(*) as total'), DB::raw('sum(is_late = true) as late_count'))
-                        ->whereBetween('date', [$startDate, $endDate])
+        // 3. Avg Attendance Rate Calculation
+        $daysInMonth = $date->daysInMonth;
+        $today = Carbon::today();
+        $daysToCount = ($date->month == $today->month && $date->year == $today->year) 
+            ? min($daysInMonth, $today->day) 
+            : $daysInMonth;
+        
+        // Weekend subtraction could be better but let's stick to total days for simple overview
+        $avgAttendanceRate = ($totalEmployees > 0 && $daysToCount > 0)
+            ? round(($totalCheckIns / ($totalEmployees * $daysToCount)) * 100, 1)
+            : 0;
+
+        // 4. Daily Data for Chart
+        $dailyData = (clone $attendanceQuery)
+                        ->select('date', DB::raw('count(*) as total'), DB::raw('sum(is_late = true) as late_count'))
                         ->groupBy('date')
                         ->orderBy('date')
                         ->get()
                         ->keyBy('date');
 
-        // Generate chart data for all days in month
         $chartData = [];
-        $daysInMonth = $date->daysInMonth;
         for ($i = 1; $i <= $daysInMonth; $i++) {
-            $currentDate = $date->copy()->day($i)->format('Y-m-d');
-            $dayLabel = $date->copy()->day($i)->format('d M');
+            $currentDateStr = $date->copy()->day($i)->format('Y-m-d');
+            $dayLabel = $date->copy()->day($i)->day; // Just day number for crowded charts
             
             $on_time = 0;
             $late = 0;
             
-            // Check if we have exact data for this date
-            if ($dailyData->has($currentDate)) {
-                $late = $dailyData[$currentDate]->late_count;
-                $on_time = $dailyData[$currentDate]->total - $late;
+            if ($dailyData->has($currentDateStr)) {
+                $late = (int)$dailyData[$currentDateStr]->late_count;
+                $on_time = (int)$dailyData[$currentDateStr]->total - $late;
             }
             
-            // Using real data, but falling back to fake visually appealing numbers for demonstration 
-            // if it's in the past and there's no data.
             $chartData[] = [
-                'date' => $currentDate,
+                'date' => $currentDateStr,
                 'label' => $dayLabel,
                 'on_time' => $on_time,
                 'late' => $late,
-                'fake_on_time' => $on_time > 0 ? $on_time : ($currentDate <= now()->format('Y-m-d') && date('N', strtotime($currentDate)) < 6 ? rand((int)($totalEmployees * 0.7), (int)($totalEmployees * 0.9)) : 0),
-                'fake_late' => $on_time > 0 ? $late : ($currentDate <= now()->format('Y-m-d') && date('N', strtotime($currentDate)) < 6 ? rand(0, (int)($totalEmployees * 0.2)) : 0),
             ];
         }
 
-        // Attendance Table Data with Pagination
-        $attendances = Attendance::with(['employee.department', 'employee.position', 'shift', 'checkInWorksite'])
-            ->whereBetween('date', [$startDate, $endDate])
+        // 5. Paginated List
+        $attendances = (clone $attendanceQuery)
+            ->with(['employee.department', 'employee.position', 'shift', 'checkInWorksite'])
             ->orderBy('date', 'desc')
             ->orderBy('check_in_at', 'desc')
             ->paginate(15)
             ->withQueryString();
 
-        // Map for Vue
         $attendances->getCollection()->transform(function($a) {
             return [
                 'id' => $a->id,
@@ -96,20 +126,20 @@ class ReportController extends Controller
             ];
         });
 
-        // Approximation for AVG attendance rate (since we might fake data, let's give a nice fake number if real checks are exactly 0, else purely real)
-        $avgAttendanceRate = $totalCheckIns > 0 ? min(100, round(($totalCheckIns / max(1, $totalEmployees * min($daysInMonth, date('d') ?: 30))) * 100)) : rand(90, 96);
-
         return Inertia::render('Report/Index', [
             'stats' => [
-                'total_employees' => $totalEmployees > 0 ? $totalEmployees : 0,
-                'avg_attendance_rate' => $avgAttendanceRate,
+                'total_employees' => $totalEmployees,
+                'avg_attendance_rate' => min(100, $avgAttendanceRate),
                 'total_lates' => $totalLates,
                 'total_leaves' => $totalLeaves
             ],
             'chartData' => $chartData,
             'attendances' => $attendances,
+            'departments' => \App\Models\Department::select('id', 'name')->get(),
             'filters' => [
                 'month' => $monthParam,
+                'department_id' => $departmentId,
+                'search' => $search,
             ]
         ]);
     }
@@ -117,6 +147,9 @@ class ReportController extends Controller
     public function export(Request $request)
     {
         $monthParam = $request->input('month', Carbon::now()->format('Y-m'));
+        $departmentId = $request->input('department_id');
+        $search = $request->input('search');
+
         try {
             $date = Carbon::createFromFormat('Y-m', $monthParam);
         } catch (\Exception $e) {
@@ -126,13 +159,33 @@ class ReportController extends Controller
         $startDate = $date->copy()->startOfMonth()->format('Y-m-d');
         $endDate = $date->copy()->endOfMonth()->format('Y-m-d');
 
-        $attendances = Attendance::with(['employee.department', 'employee.position', 'shift', 'checkInWorksite'])
-            ->whereBetween('date', [$startDate, $endDate])
-            ->orderBy('date', 'desc')
+        $query = Attendance::with(['employee.department', 'employee.position', 'shift', 'checkInWorksite'])
+            ->whereBetween('date', [$startDate, $endDate]);
+
+        // Apply filters
+        if ($departmentId || $search) {
+            $query->whereHas('employee', function($q) use ($departmentId, $search) {
+                if ($departmentId) {
+                    $q->where('department_id', $departmentId);
+                }
+                if ($search) {
+                    $q->where(function($sq) use ($search) {
+                        $sq->where('first_name', 'like', "%{$search}%")
+                          ->orWhere('last_name', 'like', "%{$search}%")
+                          ->orWhere('employee_code', 'like', "%{$search}%");
+                    });
+                }
+            });
+        }
+
+        $attendances = $query->orderBy('date', 'desc')
             ->orderBy('check_in_at', 'desc')
             ->get();
 
-        $filename = "attendance_report_{$monthParam}.csv";
+        $filename = "attendance_report_{$monthParam}";
+        if ($departmentId) $filename .= "_dept_{$departmentId}";
+        $filename .= ".csv";
+
         $headers = [
             "Content-type" => "text/csv",
             "Content-Disposition" => "attachment; filename=$filename",
