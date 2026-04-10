@@ -1,12 +1,3 @@
-# Stage 1: Build Frontend Assets
-FROM node:20 AS frontend
-WORKDIR /app
-COPY package.json package-lock.json* ./
-RUN npm install
-COPY . .
-RUN npm run build
-
-# Stage 2: PHP Application
 FROM php:8.2-fpm
 
 # Install dependencies
@@ -41,9 +32,6 @@ WORKDIR /var/www
 
 # Copy existing application directory
 COPY . /var/www
-
-# Copy compiled frontend assets from Stage 1
-COPY --from=frontend /app/public/build /var/www/public/build
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
