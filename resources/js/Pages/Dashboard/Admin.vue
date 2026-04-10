@@ -189,11 +189,104 @@ const maxDeptCount = computed(() => {
                     </div>
                 </div>
 
-                <!-- Section 3: Today's Attendance + Recent Leaves -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Section 3: Attendance Trend + Recent Leaves -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                    <!-- 7-Day Attendance Chart -->
+                    <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                        <div class="px-6 pt-6 pb-6">
+                            <div class="flex justify-between items-end mb-6">
+                                <div>
+                                    <h3 class="text-lg font-bold text-slate-800 mb-1">📊 แนวโน้มการเข้างาน 7 วันล่าสุด</h3>
+                                    <div class="flex items-center gap-4 text-xs font-medium">
+                                        <div class="flex items-center gap-1.5"><div class="w-2.5 h-2.5 rounded-full bg-emerald-400"></div> มาปกติ</div>
+                                        <div class="flex items-center gap-1.5"><div class="w-2.5 h-2.5 rounded-full bg-rose-400"></div> มาสาย</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Bar Chart -->
+                            <div class="h-52 relative flex items-end justify-between gap-2 px-1">
+                                <!-- Grid lines -->
+                                <div class="absolute inset-0 flex flex-col justify-between pointer-events-none">
+                                    <div class="w-full h-px bg-slate-100"></div>
+                                    <div class="w-full h-px bg-slate-100"></div>
+                                    <div class="w-full h-px bg-slate-100"></div>
+                                    <div class="w-full h-px bg-slate-100"></div>
+                                    <div class="w-full h-px bg-slate-200/50"></div>
+                                </div>
+                                
+                                <div v-for="item in chartData" :key="item.date" class="relative flex flex-col justify-end items-center group flex-1" style="height: 100%;">
+                                    <div class="w-full max-w-[40px] flex flex-col justify-end mx-auto" style="height: calc(100% - 28px); position: relative; z-index: 10;">
+                                        <!-- Tooltip -->
+                                        <div class="absolute -top-14 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white text-[10px] py-1.5 px-3 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all whitespace-nowrap z-20 pointer-events-none">
+                                            <div class="font-bold border-b border-white/20 mb-1 pb-1">{{ item.date }}</div>
+                                            <div class="text-emerald-300">ปกติ: {{ item.on_time || 0 }}</div>
+                                            <div class="text-rose-300">สาย: {{ item.late || 0 }}</div>
+                                        </div>
+                                        <div class="w-full rounded-t-md bar-late transition-all duration-700 ease-out hover:brightness-110" 
+                                            :style="{ height: `${((item.late || 0) / maxVal) * 100}%` }">
+                                        </div>
+                                        <div class="w-full rounded-b-md bar-ontime transition-all duration-700 ease-out hover:brightness-110" 
+                                            :style="{ height: `${((item.on_time || 0) / maxVal) * 100}%` }">
+                                        </div>
+                                    </div>
+                                    <div class="text-[11px] font-bold text-slate-400 mt-2 h-5">{{ item.label }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Leave Requests -->
+                    <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex flex-col">
+                        <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
+                            <div>
+                                <h3 class="font-bold text-base text-slate-800 flex items-center gap-2">📋 คำขอลาล่าสุด</h3>
+                                <p class="text-xs text-slate-400 mt-0.5">รายการล่าสุดจากพนักงาน</p>
+                            </div>
+                            <Link :href="route('leave.approvals')" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition">
+                                ดูทั้งหมด →
+                            </Link>
+                        </div>
+
+                        <div class="flex-1 divide-y divide-slate-100">
+                            <div v-for="leave in recentLeaves" :key="leave.id" class="px-6 py-4 hover:bg-indigo-50/30 transition">
+                                <div class="flex items-start justify-between gap-3">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-bold text-slate-800 truncate">{{ leave.employee_name }}</p>
+                                        <p class="text-xs text-slate-500 mt-0.5">{{ getLeaveLabel(leave.leave_type) }}</p>
+                                        <p class="text-xs text-slate-400 mt-1">
+                                            {{ formatDate(leave.start_date) }} - {{ formatDate(leave.end_date) }}
+                                            <span class="font-bold text-indigo-600 ml-1">({{ leave.total_days }} วัน)</span>
+                                        </p>
+                                    </div>
+                                    <span class="shrink-0 inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full border"
+                                        :class="getLeaveStatusBadge(leave.status).class">
+                                        {{ getLeaveStatusBadge(leave.status).icon }} {{ getLeaveStatusBadge(leave.status).label }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div v-if="!recentLeaves?.length" class="px-6 py-10 text-center">
+                                <div class="text-3xl mb-2">✨</div>
+                                <p class="font-bold text-slate-400 text-sm">ไม่มีคำขอลา</p>
+                            </div>
+                        </div>
+
+                        <div class="px-6 py-4 border-t border-slate-100 bg-slate-50/50">
+                            <Link :href="route('leave.approvals')"
+                                class="flex items-center justify-center gap-2 w-full bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold py-3 rounded-xl shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                                จัดการคำขอลา
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Today's Attendance + Dept Breakdown -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     
                     <!-- Today's Attendance -->
-                    <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                    <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
                         <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
                             <div>
                                 <h3 class="font-bold text-base text-slate-800 flex items-center gap-2">⏰ การเข้างานวันนี้</h3>
@@ -267,114 +360,12 @@ const maxDeptCount = computed(() => {
                                 </tbody>
                             </table>
                         </div>
-                        <div class="px-6 py-4 border-t border-slate-100 bg-slate-50/50">
-                            <Link :href="route('reports.index')"
-                                class="flex items-center justify-center gap-2 w-full bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold py-3 rounded-xl shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                                ดูข้อมูลเข้างานรายวัน
-                            </Link>
-                        </div>
-                    </div>
-
-                    <!-- Recent Leave Requests -->
-                    <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex flex-col">
-                        <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
-                            <div>
-                                <h3 class="font-bold text-base text-slate-800 flex items-center gap-2">📋 คำขอลาล่าสุด</h3>
-                                <p class="text-xs text-slate-400 mt-0.5">รายการล่าสุดจากพนักงาน</p>
-                            </div>
-                            <Link :href="route('leave.approvals')" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition">
-                                ดูทั้งหมด →
-                            </Link>
-                        </div>
-
-                        <div class="flex-1 divide-y divide-slate-100">
-                            <div v-for="leave in recentLeaves" :key="leave.id" class="px-6 py-4 hover:bg-indigo-50/30 transition">
-                                <div class="flex items-start justify-between gap-3">
-                                    <div class="flex-1 min-w-0">
-                                        <p class="text-sm font-bold text-slate-800 truncate">{{ leave.employee_name }}</p>
-                                        <p class="text-xs text-slate-500 mt-0.5">{{ getLeaveLabel(leave.leave_type) }}</p>
-                                        <p class="text-xs text-slate-400 mt-1">
-                                            {{ formatDate(leave.start_date) }} - {{ formatDate(leave.end_date) }}
-                                            <span class="font-bold text-indigo-600 ml-1">({{ leave.total_days }} วัน)</span>
-                                        </p>
-                                    </div>
-                                    <span class="shrink-0 inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full border"
-                                        :class="getLeaveStatusBadge(leave.status).class">
-                                        {{ getLeaveStatusBadge(leave.status).icon }} {{ getLeaveStatusBadge(leave.status).label }}
-                                    </span>
-                                </div>
-                            </div>
-                            <div v-if="!recentLeaves?.length" class="px-6 py-10 text-center">
-                                <div class="text-3xl mb-2">✨</div>
-                                <p class="font-bold text-slate-400 text-sm">ไม่มีคำขอลา</p>
-                            </div>
-                        </div>
-
-                        <div class="px-6 py-4 border-t border-slate-100 bg-slate-50/50">
-                            <Link :href="route('leave.approvals')"
-                                class="flex items-center justify-center gap-2 w-full bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold py-3 rounded-xl shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
-                                จัดการคำขอลาทั้งหมด
-                                <span v-if="stats.pending_leaves > 0" class="bg-white/20 px-2 py-0.5 rounded-full text-xs">{{ stats.pending_leaves }}</span>
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Section 4: Chart + Dept Breakdown -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                    <!-- 7-Day Attendance Chart -->
-                    <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-                        <div class="px-6 pt-6 pb-6">
-                            <div class="flex justify-between items-end mb-6">
-                                <div>
-                                    <h3 class="text-lg font-bold text-slate-800 mb-1">📊 แนวโน้มการเข้างาน 7 วันล่าสุด</h3>
-                                    <div class="flex items-center gap-4 text-xs font-medium">
-                                        <div class="flex items-center gap-1.5"><div class="w-2.5 h-2.5 rounded-full bg-emerald-400"></div> มาปกติ</div>
-                                        <div class="flex items-center gap-1.5"><div class="w-2.5 h-2.5 rounded-full bg-rose-400"></div> มาสาย</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Bar Chart -->
-                            <div class="h-52 relative flex items-end justify-between gap-2 px-1">
-                                <!-- Grid lines -->
-                                <div class="absolute inset-0 flex flex-col justify-between pointer-events-none">
-                                    <div class="w-full h-px bg-slate-100"></div>
-                                    <div class="w-full h-px bg-slate-100"></div>
-                                    <div class="w-full h-px bg-slate-100"></div>
-                                    <div class="w-full h-px bg-slate-100"></div>
-                                    <div class="w-full h-px bg-slate-200/50"></div>
-                                </div>
-                                
-                                <div v-for="item in chartData" :key="item.date" class="relative flex flex-col justify-end items-center group flex-1" style="height: 100%;">
-                                    <div class="w-full max-w-[40px] flex flex-col justify-end mx-auto" style="height: calc(100% - 28px); position: relative; z-index: 10;">
-                                        <!-- Tooltip -->
-                                        <div class="absolute -top-14 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white text-[10px] py-1.5 px-3 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all whitespace-nowrap z-20 pointer-events-none">
-                                            <div class="font-bold border-b border-white/20 mb-1 pb-1">{{ item.date }}</div>
-                                            <div class="text-emerald-300">ปกติ: {{ item.on_time || 0 }}</div>
-                                            <div class="text-rose-300">สาย: {{ item.late || 0 }}</div>
-                                        </div>
-                                        <div class="w-full rounded-t-md bar-late transition-all duration-700 ease-out hover:brightness-110" 
-                                            :style="{ height: `${((item.late || 0) / maxVal) * 100}%` }">
-                                        </div>
-                                        <div class="w-full rounded-b-md bar-ontime transition-all duration-700 ease-out hover:brightness-110" 
-                                            :style="{ height: `${((item.on_time || 0) / maxVal) * 100}%` }">
-                                        </div>
-                                    </div>
-                                    <div class="text-[11px] font-bold text-slate-400 mt-2 h-5">{{ item.label }}</div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Department Breakdown -->
                     <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex flex-col">
                         <div class="px-6 py-5 border-b border-slate-100">
                             <h3 class="font-bold text-base text-slate-800 flex items-center gap-2">🏢 สัดส่วนพนักงานตามแผนก</h3>
-                            <p class="text-xs text-slate-400 mt-0.5">จำนวนพนักงานในแต่ละแผนก</p>
                         </div>
                         <div class="flex-1 p-6 space-y-4">
                             <div v-for="dept in departments" :key="dept.name" class="group">
@@ -388,15 +379,11 @@ const maxDeptCount = computed(() => {
                                     </div>
                                 </div>
                             </div>
-                            <div v-if="!departments?.length" class="py-8 text-center">
-                                <div class="text-3xl mb-2">🏢</div>
-                                <p class="font-bold text-slate-400 text-sm">ยังไม่มีข้อมูลแผนก</p>
-                            </div>
                         </div>
                         <div class="px-6 py-4 border-t border-slate-100 bg-slate-50/50">
-                            <Link :href="route('departments.index')"
+                            <Link :href="route('reports.index')"
                                 class="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition flex items-center gap-1">
-                                จัดการแผนก →
+                                ดูรายงานแผนก →
                             </Link>
                         </div>
                     </div>
