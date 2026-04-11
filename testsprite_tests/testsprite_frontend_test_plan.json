@@ -1,0 +1,892 @@
+[
+  {
+    "id": "TC001",
+    "title": "Employee can check in with webcam photo",
+    "description": "Verifies an authenticated employee can capture a webcam photo, submit a check-in, and see a success confirmation.",
+    "category": "Attendance Management (Check-in / Check-out)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to open the attendance check-in/out page"
+      },
+      {
+        "type": "action",
+        "description": "Wait for the camera preview to be available"
+      },
+      {
+        "type": "action",
+        "description": "Capture a photo using the web camera"
+      },
+      {
+        "type": "action",
+        "description": "Select check-in"
+      },
+      {
+        "type": "action",
+        "description": "Submit attendance"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a successful check-in confirmation is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC002",
+    "title": "Daily attendance check-in succeeds after webcam capture",
+    "description": "Verifies an authenticated user can open the attendance page, capture a photo via webcam, check in, and see a successful confirmation state.",
+    "category": "Daily Attendance",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to the attendance check-in/out page"
+      },
+      {
+        "type": "action",
+        "description": "Wait for the webcam preview or camera-ready state to be displayed"
+      },
+      {
+        "type": "action",
+        "description": "Capture a photo using the webcam capture control"
+      },
+      {
+        "type": "action",
+        "description": "Submit a check-in"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a check-in success confirmation is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC003",
+    "title": "Employee can sign in and reach authenticated landing",
+    "description": "Verifies an employee can log in with valid credentials and is taken to an authenticated post-login page.",
+    "category": "User Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user is authenticated and sees a signed-in landing page state"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC004",
+    "title": "Employee onboarding completes registration and profile update",
+    "description": "Verifies a new employee can register, land in the authenticated area, update profile details, and save successfully.",
+    "category": "Profile Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /register"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid name into the name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a unique valid email into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid password into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Fill the same valid password into the password confirmation field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to the profile page"
+      },
+      {
+        "type": "action",
+        "description": "Fill an updated value into a profile field that is editable"
+      },
+      {
+        "type": "action",
+        "description": "Save profile changes"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a save success confirmation is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC005",
+    "title": "Employee can check out after checking in",
+    "description": "Verifies an authenticated employee can check in and later check out with webcam capture and see a success confirmation for check-out.",
+    "category": "Attendance Management (Check-in / Check-out)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to open the attendance check-in/out page"
+      },
+      {
+        "type": "action",
+        "description": "Wait for the camera preview to be available"
+      },
+      {
+        "type": "action",
+        "description": "Capture a photo using the web camera"
+      },
+      {
+        "type": "action",
+        "description": "Select check-in"
+      },
+      {
+        "type": "action",
+        "description": "Submit attendance"
+      },
+      {
+        "type": "action",
+        "description": "Wait for the check-in submission to complete"
+      },
+      {
+        "type": "action",
+        "description": "Capture a new photo using the web camera"
+      },
+      {
+        "type": "action",
+        "description": "Select check-out"
+      },
+      {
+        "type": "action",
+        "description": "Submit attendance"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a successful check-out confirmation is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC006",
+    "title": "Daily attendance check-out succeeds after check-in",
+    "description": "Verifies an authenticated user can check in with a captured photo and later complete check-out, ending with a visible check-out confirmation state.",
+    "category": "Daily Attendance",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to the attendance check-in/out page"
+      },
+      {
+        "type": "action",
+        "description": "Wait for the webcam preview or camera-ready state to be displayed"
+      },
+      {
+        "type": "action",
+        "description": "Capture a photo using the webcam capture control"
+      },
+      {
+        "type": "action",
+        "description": "Submit a check-in"
+      },
+      {
+        "type": "action",
+        "description": "Capture a new photo using the webcam capture control"
+      },
+      {
+        "type": "action",
+        "description": "Submit a check-out"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a check-out success confirmation is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC007",
+    "title": "New employee can register and land in logged-in state",
+    "description": "Verifies a new user can register a new account and is automatically logged in or taken to a logged-in landing page.",
+    "category": "User Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /register"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the name field with Test Employee"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with a newly generated unique email"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with a valid password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user is in an authenticated logged-in state"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC008",
+    "title": "Unauthenticated user is gated from protected attendance page",
+    "description": "Verifies a logged-out user cannot access the attendance check-in/out page and is redirected to authentication.",
+    "category": "User Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /attendance/check-in-out"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user is prompted to authenticate before accessing protected content"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC009",
+    "title": "Unauthenticated user is gated from protected admin dashboard",
+    "description": "Verifies a logged-out user cannot access the admin dashboard and is redirected to authentication.",
+    "category": "User Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user is prompted to authenticate before accessing protected content"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC010",
+    "title": "Employee submits a leave request and sees it in the list after refresh",
+    "description": "Verifies an authenticated employee can create a leave request with required dates and reason, see it listed, and still see it after a refresh.",
+    "category": "Leave Request Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to the leave page"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid start date in the leave start date field"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid end date in the leave end date field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a specific reason into the leave reason field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the leave request"
+      },
+      {
+        "type": "action",
+        "description": "Press F5"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a leave request entry with the specific reason is displayed in the leave list"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC011",
+    "title": "Profile updates persist after refresh",
+    "description": "Verifies an authenticated user can change an editable profile field, save, refresh, and still see the updated value present.",
+    "category": "Profile Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to the profile page"
+      },
+      {
+        "type": "action",
+        "description": "Fill a new identifiable value into an editable profile field"
+      },
+      {
+        "type": "action",
+        "description": "Save profile changes"
+      },
+      {
+        "type": "action",
+        "description": "Press F5"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the profile page shows the updated identifiable value"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC012",
+    "title": "Non-admin is denied access to admin dashboard",
+    "description": "Verifies a non-admin user cannot access the admin dashboard and is shown an access denied or insufficient permissions state.",
+    "category": "Admin Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an access denied or insufficient permissions message is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC013",
+    "title": "Signed-in employee can update profile details",
+    "description": "Verifies an authenticated employee can edit profile fields and the changes save successfully.",
+    "category": "Profile Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to open the user profile page"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the name field with Test Employee Updated"
+      },
+      {
+        "type": "action",
+        "description": "Submit the profile changes"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a profile update success confirmation is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC014",
+    "title": "Admin dashboard renders KPIs, 7-day trend, and recent leaves",
+    "description": "Verifies an admin can access the dashboard and see KPI summaries, a 7-day attendance trend visualization, and a recent leave requests list.",
+    "category": "Admin Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to the admin dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify KPI summary cards are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a 7-day attendance trend visualization and a recent leave requests list are displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC015",
+    "title": "Monthly attendance report renders summary and details for a selected month",
+    "description": "Verifies an authenticated user can select a month/period on the reports page and see both a report summary and detail rows.",
+    "category": "Monthly Attendance Reports",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to the reports page"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid month or reporting period"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a monthly attendance report summary is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify attendance detail rows are displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC016",
+    "title": "Switching report months updates displayed report data",
+    "description": "Verifies changing the selected month/period updates the monthly report content shown on the page.",
+    "category": "Monthly Attendance Reports",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to the reports page"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid month or reporting period"
+      },
+      {
+        "type": "action",
+        "description": "Select a different valid month or reporting period"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the report summary and details update to reflect the newly selected period"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC017",
+    "title": "Attendance submission requires captured photo",
+    "description": "Verifies the attendance form prevents submission when no photo is captured and shows a photo-required validation error.",
+    "category": "Attendance Management (Check-in / Check-out)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to open the attendance check-in/out page"
+      },
+      {
+        "type": "action",
+        "description": "Select check-in"
+      },
+      {
+        "type": "action",
+        "description": "Submit attendance"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a validation error is visible indicating a photo is required"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC018",
+    "title": "Attendance submission is blocked without a captured photo",
+    "description": "Verifies the attendance page prevents check-in/out submission when no photo has been captured and shows a validation error.",
+    "category": "Daily Attendance",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to the attendance check-in/out page"
+      },
+      {
+        "type": "action",
+        "description": "Submit a check-in without capturing a photo"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a photo-required validation error is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC019",
+    "title": "Profile password change blocks mismatched confirmation",
+    "description": "Verifies the profile form prevents saving when the new password and confirmation do not match and shows a mismatch validation error.",
+    "category": "Profile Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to open the user profile page"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid value into the new password field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a different valid value into the confirm password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the profile changes"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a password mismatch validation error is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC020",
+    "title": "Profile password mismatch shows validation error",
+    "description": "Verifies the profile password change prevents saving when the new password and confirmation do not match and shows a validation error.",
+    "category": "Profile Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to the profile page"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid new password into the new password field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a different valid password into the password confirmation field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the password change"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a password mismatch validation error is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC021",
+    "title": "Registration requires password",
+    "description": "Verifies the registration form blocks account creation when the password is missing and shows a required-field validation error.",
+    "category": "User Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /register"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the name field with Test Employee"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with a newly generated unique email"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with an empty value"
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a password required validation error is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC022",
+    "title": "Leave request requires dates",
+    "description": "Verifies the leave request form blocks submission when required date fields are empty and shows validation feedback.",
+    "category": "Leave Request Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to the leave page"
+      },
+      {
+        "type": "action",
+        "description": "Fill a reason into the leave reason field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the leave request"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a required-date validation error is visible"
+      }
+    ],
+    "priority": "Low"
+  }
+]

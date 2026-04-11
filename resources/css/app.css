@@ -21,6 +21,6 @@
     @apply bg-slate-900/80 backdrop-blur-md border border-slate-700/50 text-white shadow-xl;
   }
   .gradient-primary {
-    @apply bg-gradient-to-br from-indigo-600 to-indigo-800 text-white;
+    @apply bg-gradient-to-br from-emerald-600 to-emerald-800 text-white;
   }
 }

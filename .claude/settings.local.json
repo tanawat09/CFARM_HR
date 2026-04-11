@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls \"C:\\\\Users\\\\CWF-01\\\\.claude\\\\projects\\\\D--CFARM-HR\\\\memory\"\" 2>/dev/null || echo \"empty or no memory \")",
+      "Bash(php artisan:*)",
+      "Bash(npm run:*)",
+      "Bash(python -c \"import json,sys; m=json.load\\(sys.stdin\\); print\\('entry:', m.get\\('resources/js/app.js', {}\\).get\\('file'\\)\\); print\\('admin:', m.get\\('resources/js/Pages/Dashboard/Admin.vue', {}\\).get\\('file'\\)\\)\")"
+    ]
+  }
+}

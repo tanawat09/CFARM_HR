@@ -103,7 +103,7 @@ const submit = () => {
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                             <!-- Camera Column -->
                             <div class="flex flex-col items-center">
-                                <div class="bg-indigo-50 border border-indigo-100 rounded-full px-4 py-1.5 mb-4 text-indigo-700 font-semibold text-sm flex items-center gap-2 shadow-sm">
+                                <div class="bg-emerald-50 border border-emerald-100 rounded-full px-4 py-1.5 mb-4 text-emerald-700 font-semibold text-sm flex items-center gap-2 shadow-sm">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                                     ยืนยันตัวตนด้วยใบหน้า
                                 </div>
@@ -116,7 +116,7 @@ const submit = () => {
                             <!-- Form Column -->
                             <div class="flex flex-col justify-between">
                                 <div>
-                                    <div class="bg-indigo-50 border border-indigo-100 rounded-full px-4 py-1.5 mb-4 text-indigo-700 font-semibold text-sm flex items-center gap-2 shadow-sm inline-flex">
+                                    <div class="bg-emerald-50 border border-emerald-100 rounded-full px-4 py-1.5 mb-4 text-emerald-700 font-semibold text-sm flex items-center gap-2 shadow-sm inline-flex">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                                         ข้อมูลการระบุตำแหน่ง
                                     </div>
@@ -140,7 +140,7 @@ const submit = () => {
                                             </span>
                                         </div>
                                         
-                                        <button @click="fetchLocation" type="button" class="mt-4 w-full flex items-center justify-center gap-2 py-2 text-sm font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-xl transition" :disabled="isLoading">
+                                        <button @click="fetchLocation" type="button" class="mt-4 w-full flex items-center justify-center gap-2 py-2 text-sm font-semibold text-emerald-600 bg-emerald-50 hover:bg-emerald-100 rounded-xl transition" :disabled="isLoading">
                                             <svg v-if="isLoading" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                                             <svg v-else class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                                             {{ isLoading ? 'กำลังดึงตำแหน่ง...' : 'รีเฟรชตำแหน่ง GPS' }}
@@ -151,13 +151,13 @@ const submit = () => {
                                     <!-- If Employee is not full geofence -->
                                     <div class="mb-5 bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
                                         <label class="block font-bold text-sm text-slate-700 mb-2">เหตุผลกรณีอยู่นอกพื้นที่ <span class="text-slate-400 font-normal">(ถ้ามี)</span></label>
-                                        <textarea v-model="form.outside_reason" class="border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 bg-slate-50 rounded-xl shadow-sm w-full transition" rows="2" placeholder="เช่น ขออนุญาตแวะซื้อวัสดุอุปกรณ์"></textarea>
+                                        <textarea v-model="form.outside_reason" class="border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 bg-slate-50 rounded-xl shadow-sm w-full transition" rows="2" placeholder="เช่น ขออนุญาตแวะซื้อวัสดุอุปกรณ์"></textarea>
                                         <InputError :message="form.errors.outside_reason" class="mt-1" />
                                     </div>
 
                                     <div class="mb-2 bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
                                         <label class="block font-bold text-sm text-slate-700 mb-2">หมายเหตุการปฏิบัติงาน</label>
-                                        <input v-model="form.note" type="text" class="border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 bg-slate-50 rounded-xl shadow-sm w-full transition" placeholder="รายงานสั้นๆ (Optional)">
+                                        <input v-model="form.note" type="text" class="border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 bg-slate-50 rounded-xl shadow-sm w-full transition" placeholder="รายงานสั้นๆ (Optional)">
                                         <InputError :message="form.errors.note" class="mt-1" />
                                     </div>
                                 </div>
@@ -166,7 +166,7 @@ const submit = () => {
                                     <button 
                                         @click="submit" 
                                         class="w-full flex justify-center items-center gap-3 py-5 text-xl tracking-wide font-extrabold shadow-xl rounded-2xl transition-all transform hover:-translate-y-1 hover:shadow-2xl disabled:opacity-50 disabled:hover:translate-y-0 disabled:cursor-not-allowed"
-                                        :class="mode === 'checkin' ? 'bg-gradient-to-br from-indigo-600 to-indigo-800 text-white' : 'bg-gradient-to-br from-rose-500 to-red-700 text-white'"
+                                        :class="mode === 'checkin' ? 'bg-gradient-to-br from-emerald-600 to-emerald-800 text-white' : 'bg-gradient-to-br from-rose-500 to-red-700 text-white'"
                                         :disabled="form.processing || isLoading || !form.photo"
                                     >
                                         <svg v-if="form.processing" class="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>

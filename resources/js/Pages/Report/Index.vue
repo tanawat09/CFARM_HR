@@ -77,14 +77,21 @@ const getStatusBadge = (status) => {
     <AuthenticatedLayout>
         <template #header>
              <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-                <div class="flex flex-col gap-1">
+                <div class="flex flex-col gap-3">
                     <h2 class="font-black text-3xl text-slate-800 leading-tight tracking-tight flex items-center gap-3">
                         <span class="p-3 bg-indigo-600 rounded-2xl shadow-lg shadow-indigo-200">
                             <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                         </span>
                         สถิติการเข้างานรายเดือน
                     </h2>
-                    <p class="text-slate-400 font-medium ml-1">สรุปผลการปฏิบัติงานและแนวโน้มภาพรวมบริษัท</p>
+                    <div class="flex items-center gap-2 bg-slate-100 p-1.5 rounded-2xl w-max shadow-inner">
+                        <Link :href="route('reports.index')" class="flex items-center gap-2 px-5 py-2.5 text-sm font-black rounded-xl transition-all bg-white text-indigo-700 shadow-md ring-1 ring-slate-900/5">
+                            <span class="text-lg">🕒</span> เวลาและการเข้างาน
+                        </Link>
+                        <Link :href="route('reports.leaves')" class="flex items-center gap-2 px-5 py-2.5 text-sm font-bold rounded-xl transition-all text-slate-500 hover:text-slate-700 hover:bg-slate-200/50">
+                            <span class="text-lg">🏖️</span> สถิติการลางาน
+                        </Link>
+                    </div>
                 </div>
                 
                 <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">

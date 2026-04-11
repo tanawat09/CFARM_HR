@@ -5,22 +5,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Position;
-use App\Models\Department;
 
 class PositionController extends Controller
 {
     public function index()
     {
-        $positions = Position::with('department')->withCount('employees')->orderBy('name')->get();
-        $departments = Department::orderBy('name')->get();
-        return Inertia::render('Position/Index', ['positions' => $positions, 'departments' => $departments]);
+        $positions = Position::withCount('employees')->orderBy('name')->get();
+        return Inertia::render('Position/Index', ['positions' => $positions]);
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:100',
-            'department_id' => 'nullable|exists:departments,id',
+            'name' => 'required|string|max:100|unique:positions,name',
             'is_active' => 'boolean',
         ]);
         Position::create($validated);
@@ -30,8 +27,7 @@ class PositionController extends Controller
     public function update(Request $request, Position $position)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:100',
-            'department_id' => 'nullable|exists:departments,id',
+            'name' => 'required|string|max:100|unique:positions,name,' . $position->id,
             'is_active' => 'boolean',
         ]);
         $position->update($validated);

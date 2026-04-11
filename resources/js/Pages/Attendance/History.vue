@@ -17,11 +17,11 @@ const formatTime = (timeString) => {
 };
 const getStatusBadge = (status) => {
     const map = {
-        'checked_in': { text: 'กำลังทำงาน', class: 'bg-blue-100 text-blue-800' },
-        'checked_out': { text: 'เลิกงาน', class: 'bg-green-100 text-green-800' },
-        'missed_checkout': { text: 'ลืมออกงาน', class: 'bg-red-100 text-red-800' },
+        'checked_in': { text: 'กำลังทำงาน', class: 'bg-emerald-100 text-emerald-800' },
+        'checked_out': { text: 'เลิกงาน', class: 'bg-teal-100 text-teal-800' },
+        'missed_checkout': { text: 'ลืมออกงาน', class: 'bg-rose-100 text-rose-800' },
     };
-    return map[status] || { text: status, class: 'bg-gray-100 text-gray-800' };
+    return map[status] || { text: status, class: 'bg-slate-100 text-slate-800' };
 };
 </script>
 

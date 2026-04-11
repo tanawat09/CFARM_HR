@@ -225,16 +225,22 @@ class ReportController extends Controller
 
     public function leaves(Request $request)
     {
-        $monthParam = $request->input('month', Carbon::now()->format('Y-m'));
+        $startMonthParam = $request->input('start_month', Carbon::now()->format('Y-m'));
+        $endMonthParam = $request->input('end_month', Carbon::now()->format('Y-m'));
+
         try {
-            $date = Carbon::createFromFormat('Y-m', $monthParam);
+            $startDate = Carbon::createFromFormat('Y-m', $startMonthParam)->startOfMonth()->format('Y-m-d');
         } catch (\Exception $e) {
-            $date = Carbon::now();
-            $monthParam = $date->format('Y-m');
+            $startDate = Carbon::now()->startOfMonth()->format('Y-m-d');
+            $startMonthParam = Carbon::now()->format('Y-m');
         }
-        
-        $startDate = $date->copy()->startOfMonth()->format('Y-m-d');
-        $endDate = $date->copy()->endOfMonth()->format('Y-m-d');
+
+        try {
+            $endDate = Carbon::createFromFormat('Y-m', $endMonthParam)->endOfMonth()->format('Y-m-d');
+        } catch (\Exception $e) {
+            $endDate = Carbon::now()->endOfMonth()->format('Y-m-d');
+            $endMonthParam = Carbon::now()->format('Y-m');
+        }
 
         // Stats
         $query = LeaveRequest::where(function($q) use ($startDate, $endDate) {
@@ -242,18 +248,29 @@ class ReportController extends Controller
               ->orWhereBetween('end_date', [$startDate, $endDate]);
         });
 
-        $totalApproved = (clone $query)->where('status', 'approved')->count();
-        $totalPending = (clone $query)->where('status', 'pending')->count();
-        $totalRejected = (clone $query)->where('status', 'rejected')->count();
+        $sickLeaves = (clone $query)->where('status', 'approved')->where('leave_type', \App\Enums\LeaveType::SICK->value)->count();
+        $personalLeaves = (clone $query)->where('status', 'approved')->where('leave_type', \App\Enums\LeaveType::PERSONAL->value)->count();
+        $annualLeaves = (clone $query)->where('status', 'approved')->where('leave_type', \App\Enums\LeaveType::ANNUAL->value)->count();
+        $maternityLeaves = (clone $query)->where('status', 'approved')->where('leave_type', \App\Enums\LeaveType::MATERNITY->value)->count();
+        $otherLeaves = (clone $query)->where('status', 'approved')->where('leave_type', \App\Enums\LeaveType::OTHER->value)->count();
+
+        $thaiNames = [
+            'annual' => 'ลาพักร้อน',
+            'sick' => 'ลาป่วย',
+            'personal' => 'ลากิจ',
+            'maternity' => 'ลาคลอด',
+            'other' => 'ลาบวช'
+        ];
 
         // Chart Data (Leaves by Type)
         $leaveTypes = (clone $query)->where('status', 'approved')
             ->select('leave_type', DB::raw('count(*) as count'))
             ->groupBy('leave_type')
             ->get()
-            ->map(function($item) {
+            ->map(function($item) use ($thaiNames) {
+                $typeStr = $item->leave_type->value ?? $item->leave_type;
                 return [
-                    'type' => $item->leave_type->value ?? $item->leave_type,
+                    'type' => $thaiNames[$typeStr] ?? $typeStr,
                     'count' => $item->count
                 ];
             });
@@ -268,12 +285,13 @@ class ReportController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        $leaves->getCollection()->transform(function($l) {
+        $leaves->getCollection()->transform(function($l) use ($thaiNames) {
+            $typeStr = $l->leave_type?->value ?? $l->leave_type;
             return [
                 'id' => $l->id,
                 'employee_name' => $l->employee ? $l->employee->first_name . ' ' . $l->employee->last_name : 'Unknown',
                 'department' => $l->employee?->department?->name ?? '-',
-                'leave_type' => $l->leave_type?->value ?? $l->leave_type,
+                'leave_type' => $thaiNames[$typeStr] ?? $typeStr,
                 'start_date' => $l->start_date?->format('Y-m-d'),
                 'end_date' => $l->end_date?->format('Y-m-d'),
                 'total_days' => floatval($l->total_days),
@@ -285,29 +303,37 @@ class ReportController extends Controller
 
         return Inertia::render('Report/Leaves', [
             'stats' => [
-                'approved' => $totalApproved,
-                'pending' => $totalPending,
-                'rejected' => $totalRejected
+                'sick' => $sickLeaves,
+                'personal' => $personalLeaves,
+                'annual' => $annualLeaves,
+                'maternity' => $maternityLeaves,
+                'other' => $otherLeaves
             ],
             'chartData' => $leaveTypes,
             'leaves' => $leaves,
             'filters' => [
-                'month' => $monthParam,
+                'start_month' => $startMonthParam,
+                'end_month' => $endMonthParam,
             ]
         ]);
     }
 
     public function exportLeaves(Request $request)
     {
-        $monthParam = $request->input('month', Carbon::now()->format('Y-m'));
+        $startMonthParam = $request->input('start_month', Carbon::now()->format('Y-m'));
+        $endMonthParam = $request->input('end_month', Carbon::now()->format('Y-m'));
+
         try {
-            $date = Carbon::createFromFormat('Y-m', $monthParam);
+            $startDate = Carbon::createFromFormat('Y-m', $startMonthParam)->startOfMonth()->format('Y-m-d');
         } catch (\Exception $e) {
-            $date = Carbon::now();
+            $startDate = Carbon::now()->startOfMonth()->format('Y-m-d');
         }
-        
-        $startDate = $date->copy()->startOfMonth()->format('Y-m-d');
-        $endDate = $date->copy()->endOfMonth()->format('Y-m-d');
+
+        try {
+            $endDate = Carbon::createFromFormat('Y-m', $endMonthParam)->endOfMonth()->format('Y-m-d');
+        } catch (\Exception $e) {
+            $endDate = Carbon::now()->endOfMonth()->format('Y-m-d');
+        }
 
         $leaves = LeaveRequest::with(['employee.department', 'employee.position', 'approver'])
             ->where(function($q) use ($startDate, $endDate) {
@@ -317,7 +343,7 @@ class ReportController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        $filename = "leave_report_{$monthParam}.csv";
+        $filename = "leave_report_{$startMonthParam}_to_{$endMonthParam}.csv";
         $headers = [
             "Content-type" => "text/csv",
             "Content-Disposition" => "attachment; filename=$filename",
@@ -327,17 +353,26 @@ class ReportController extends Controller
         ];
 
         $callback = function() use ($leaves) {
+            $thaiNames = [
+                'annual' => 'ลาพักร้อน',
+                'sick' => 'ลาป่วย',
+                'personal' => 'ลากิจ',
+                'maternity' => 'ลาคลอด',
+                'other' => 'ลาบวช'
+            ];
+            
             $file = fopen('php://output', 'w');
             fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
             
             fputcsv($file, ['วันที่ยื่นลา', 'พนักงาน', 'แผนก', 'ประเภทการลา', 'เริ่ม', 'สิ้นสุด', 'จำนวนวัน', 'สถานะ', 'ผู้อนุมัติ', 'เหตุผล']);
 
             foreach ($leaves as $l) {
+                $typeStr = $l->leave_type?->value ?? $l->leave_type;
                 fputcsv($file, [
                     $l->created_at->format('d/m/Y'),
                     $l->employee ? $l->employee->first_name . ' ' . $l->employee->last_name : '-',
                     $l->employee?->department?->name ?? '-',
-                    $l->leave_type?->value ?? $l->leave_type,
+                    $thaiNames[$typeStr] ?? $typeStr,
                     $l->start_date?->format('d/m/Y') ?? '-',
                     $l->end_date?->format('d/m/Y') ?? '-',
                     $l->total_days,

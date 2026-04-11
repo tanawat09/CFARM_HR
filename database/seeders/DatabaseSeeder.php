@@ -26,10 +26,10 @@ class DatabaseSeeder extends Seeder
         $field = Department::firstOrCreate(['code' => 'FIELD'], ['name' => 'ช่างติดตั้งและบริการ']);
 
         // Positions
-        $hrManager = Position::firstOrCreate(['name' => 'HR Manager'], ['department_id' => $hr->id]);
-        $itAdmin = Position::firstOrCreate(['name' => 'IT Admin'], ['department_id' => $it->id]);
-        $supervisor = Position::firstOrCreate(['name' => 'Field Supervisor'], ['department_id' => $field->id]);
-        $technician = Position::firstOrCreate(['name' => 'Technician'], ['department_id' => $field->id]);
+        $hrManager = Position::firstOrCreate(['name' => 'HR Manager']);
+        $itAdmin = Position::firstOrCreate(['name' => 'IT Admin']);
+        $supervisor = Position::firstOrCreate(['name' => 'Field Supervisor']);
+        $technician = Position::firstOrCreate(['name' => 'Technician']);
 
         // Shifts
         $normalShift = Shift::firstOrCreate(['code' => 'S1'], [

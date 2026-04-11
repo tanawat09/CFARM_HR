@@ -90,7 +90,7 @@ const submitReject = () => {
                         @click="switchTab(tab.key)"
                         class="px-5 py-2.5 rounded-xl text-sm font-bold transition border shadow-sm"
                         :class="currentTab === tab.key
-                            ? 'bg-indigo-600 text-white border-indigo-600 shadow-md'
+                            ? 'bg-emerald-600 text-white border-emerald-600 shadow-md'
                             : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'">
                         {{ tab.icon }} {{ tab.label }}
                         <span v-if="tab.key === 'pending' && pendingCount > 0" class="ml-1.5 bg-white/30 text-white px-2 py-0.5 rounded-full text-xs">{{ pendingCount }}</span>
@@ -102,7 +102,7 @@ const submitReject = () => {
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
-                                <tr class="bg-indigo-50/50 text-indigo-900 border-b border-indigo-100/50">
+                                <tr class="bg-emerald-50/50 text-emerald-900 border-b border-emerald-100/50">
                                     <th class="p-4 font-bold rounded-tl-2xl">พนักงาน</th>
                                     <th class="p-4 font-bold">ประเภทการลา</th>
                                     <th class="p-4 font-bold">วันที่ลา</th>
@@ -114,11 +114,11 @@ const submitReject = () => {
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 text-sm">
-                                <tr v-for="leave in leaves.data" :key="leave.id" class="hover:bg-indigo-50/30 transition">
+                                <tr v-for="leave in leaves.data" :key="leave.id" class="hover:bg-emerald-50/30 transition">
                                     <!-- Employee Info -->
                                     <td class="p-4">
                                         <div class="flex items-center gap-3">
-                                            <div class="w-10 h-10 rounded-full bg-indigo-100 border-2 border-indigo-200 flex items-center justify-center text-sm font-bold text-indigo-600 shrink-0">
+                                            <div class="w-10 h-10 rounded-full bg-emerald-100 border-2 border-emerald-200 flex items-center justify-center text-sm font-bold text-emerald-600 shrink-0">
                                                 {{ leave.employee?.first_name?.charAt(0) }}{{ leave.employee?.last_name?.charAt(0) }}
                                             </div>
                                             <div>
@@ -132,7 +132,7 @@ const submitReject = () => {
                                     <td class="p-4">
                                         <div class="flex items-center gap-2">
                                             <span class="font-bold text-slate-700">{{ getLeaveLabel(leave.leave_type) }}</span>
-                                            <span v-if="leave.leave_format === 'hourly'" class="text-[10px] bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded font-bold uppercase tracking-tighter">รายชั่วโมง</span>
+                                            <span v-if="leave.leave_format === 'hourly'" class="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded font-bold uppercase tracking-tighter">รายชั่วโมง</span>
                                         </div>
                                     </td>
 
@@ -141,7 +141,7 @@ const submitReject = () => {
                                         <div class="flex flex-col">
                                             <div class="flex items-center gap-1 text-slate-700 font-medium">
                                                 <span>{{ formatDate(leave.start_date) }}</span>
-                                                <span v-if="leave.leave_format === 'hourly'" class="text-xs font-bold text-indigo-600">({{ leave.start_time?.substring(0,5) }} - {{ leave.end_time?.substring(0,5) }} น.)</span>
+                                                <span v-if="leave.leave_format === 'hourly'" class="text-xs font-bold text-emerald-600">({{ leave.start_time?.substring(0,5) }} - {{ leave.end_time?.substring(0,5) }} น.)</span>
                                             </div>
                                             <div v-if="leave.leave_format === 'daily'" class="text-xs text-slate-400">ถึง {{ formatDate(leave.end_date) }}</div>
                                         </div>
@@ -150,7 +150,7 @@ const submitReject = () => {
                                     <!-- Total Days -->
                                     <td class="p-4 text-center">
                                         <div class="flex flex-col items-center">
-                                            <span class="inline-flex items-center justify-center min-w-[32px] px-2 h-8 bg-indigo-50 text-indigo-700 font-extrabold rounded-lg border border-indigo-100 text-sm">
+                                            <span class="inline-flex items-center justify-center min-w-[32px] px-2 h-8 bg-emerald-50 text-emerald-700 font-extrabold rounded-lg border border-emerald-100 text-sm">
                                                 {{ leave.total_days }}
                                             </span>
                                             <span class="text-[10px] text-slate-400 font-bold uppercase mt-1">วัน</span>

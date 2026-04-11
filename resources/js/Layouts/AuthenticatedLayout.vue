@@ -47,13 +47,13 @@ const menuItems = computed(() => {
         <div v-show="showingSidebar" class="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm lg:hidden" @click="showingSidebar = false"></div>
 
         <!-- Sidebar Navigation -->
-        <aside :class="[showingSidebar ? 'translate-x-0' : '-translate-x-full lg:translate-x-0']" class="fixed inset-y-0 left-0 z-50 w-72 bg-gradient-to-b from-indigo-900 via-indigo-800 to-indigo-900 text-white transition-transform duration-300 ease-in-out lg:static lg:block shadow-2xl flex flex-col pt-0">
+        <aside :class="[showingSidebar ? 'translate-x-0' : '-translate-x-full lg:translate-x-0']" class="fixed inset-y-0 left-0 z-50 w-72 bg-gradient-to-b from-emerald-950 via-emerald-900 to-emerald-950 text-white transition-transform duration-300 ease-in-out lg:static lg:block shadow-2xl flex flex-col pt-0">
             <!-- App Logo Area -->
             <div class="flex items-center justify-center p-6 border-b border-white/10 relative overflow-hidden shrink-0">
                 <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
                 <Link :href="route('dashboard')" class="flex items-center gap-3 relative z-10 w-full">
                     <div class="bg-white p-2 rounded-xl shadow-lg">
-                        <ApplicationLogo class="w-8 h-8 flex-shrink-0 text-indigo-700 fill-current" />
+                        <ApplicationLogo class="w-8 h-8 flex-shrink-0 text-emerald-700 fill-current" />
                     </div>
                     <span class="font-extrabold text-xl tracking-wide">CFARM HR</span>
                 </Link>
@@ -67,15 +67,15 @@ const menuItems = computed(() => {
                 <div v-for="(item, index) in menuItems" :key="index">
                     <!-- Section Divider for Admin -->
                     <div v-if="item.admin && index > 0 && !menuItems[index-1].admin" class="my-6 px-3">
-                        <p class="text-xs font-bold text-indigo-300 uppercase tracking-wider">🛠️ การจัดการระบบ</p>
+                        <p class="text-xs font-bold text-emerald-400 uppercase tracking-wider">🛠️ การจัดการระบบ</p>
                     </div>
 
-                    <Link :href="item.url" :class="[item.active ? 'bg-white/10 text-white shadow-sm ring-1 ring-white/20' : 'text-indigo-100/70 hover:bg-white/5 hover:text-white', 'flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-200 group relative mb-2 overflow-hidden']">
+                    <Link :href="item.url" :class="[item.active ? 'bg-white/10 text-white shadow-sm ring-1 ring-white/20' : 'text-emerald-100/70 hover:bg-emerald-400/5 hover:text-white', 'flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-200 group relative mb-2 overflow-hidden']">
                         <!-- Active indicator bar -->
                         <div v-if="item.active" class="absolute left-0 top-0 bottom-0 w-1 bg-teal-400 rounded-r-lg"></div>
                         <div v-if="item.active" class="absolute inset-0 bg-gradient-to-r from-teal-400/20 to-transparent"></div>
                         
-                        <div :class="[item.active ? 'text-teal-300 scale-110' : 'text-indigo-300 group-hover:text-teal-300 group-hover:scale-110', 'transition-all duration-300 relative z-10 shrink-0']">
+                        <div :class="[item.active ? 'text-teal-300 scale-110' : 'text-emerald-400 group-hover:text-teal-300 group-hover:scale-110', 'transition-all duration-300 relative z-10 shrink-0']">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="item.icon"></path>
                             </svg>
@@ -90,16 +90,16 @@ const menuItems = computed(() => {
                 <Dropdown align="top" width="48" placement="top-start">
                     <template #trigger>
                         <button class="flex items-center gap-3 w-full p-2 rounded-xl hover:bg-white/5 transition-colors text-left focus:outline-none">
-                            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-teal-400 to-indigo-500 flex items-center justify-center text-white font-bold shadow-inner shrink-0">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-400 to-teal-600 flex items-center justify-center text-white font-bold shadow-inner shrink-0">
                                 {{ ($page.props.auth.user.username || $page.props.auth.user.email).charAt(0).toUpperCase() }}
                             </div>
                             <div class="flex-1 overflow-hidden">
                                 <div class="font-bold text-sm text-white truncate">
                                     {{ $page.props.auth.user.employee ? ($page.props.auth.user.employee.first_name + ' ' + $page.props.auth.user.employee.last_name) : ($page.props.auth.user.username || $page.props.auth.user.email) }}
                                 </div>
-                                <div class="text-xs text-indigo-300 truncate">{{ $page.props.auth.user.role?.name || $page.props.auth.user.role }}</div>
+                                <div class="text-xs text-emerald-300 truncate">{{ $page.props.auth.user.role?.name || $page.props.auth.user.role }}</div>
                             </div>
-                            <svg class="w-5 h-5 text-indigo-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
+                            <svg class="w-5 h-5 text-emerald-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
                         </button>
                     </template>
                     <template #content>
@@ -117,13 +117,13 @@ const menuItems = computed(() => {
                 <div class="px-4 sm:px-6">
                     <div class="flex h-16 justify-between items-center">
                         <div class="flex shrink-0 items-center gap-3">
-                            <button @click="showingSidebar = true" class="p-2 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
+                            <button @click="showingSidebar = true" class="p-2 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
                                 <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                                 </svg>
                             </button>
                             <Link :href="route('dashboard')">
-                                <ApplicationLogo class="block h-8 w-auto text-indigo-600 fill-current" />
+                                <ApplicationLogo class="block h-8 w-auto text-emerald-600 fill-current" />
                             </Link>
                         </div>
                         
@@ -132,7 +132,7 @@ const menuItems = computed(() => {
                             <span class="text-sm font-bold text-slate-700">
                                 {{ $page.props.auth.user.employee ? ($page.props.auth.user.employee.first_name + ' ' + $page.props.auth.user.employee.last_name) : $page.props.auth.user.username }}
                             </span>
-                            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-teal-400 to-indigo-500 flex items-center justify-center text-white text-xs font-bold shadow-sm">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-400 to-teal-600 flex items-center justify-center text-white text-xs font-bold shadow-sm">
                                 {{ ($page.props.auth.user.username || $page.props.auth.user.email).charAt(0).toUpperCase() }}
                             </div>
                         </div>

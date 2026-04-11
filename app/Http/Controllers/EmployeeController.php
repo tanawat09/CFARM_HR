@@ -37,12 +37,21 @@ class EmployeeController extends Controller
             $query->where('department_id', $request->department_id);
         }
 
+        // Filter by Status
+        $status = $request->input('status', 'active');
+        if ($status === 'inactive') {
+            $query->whereIn('employment_status', [EmploymentStatus::RESIGNED->value, EmploymentStatus::TERMINATED->value]);
+        } else {
+            // Default 'active'
+            $query->whereNotIn('employment_status', [EmploymentStatus::RESIGNED->value, EmploymentStatus::TERMINATED->value]);
+        }
+
         $employees = $query->paginate(15)->withQueryString();
 
         return Inertia::render('Employee/Index', [
             'employees' => $employees,
             'departments' => Department::all(),
-            'filters' => $request->only(['search', 'department_id'])
+            'filters' => ['search' => $request->search, 'department_id' => $request->department_id, 'status' => $status]
         ]);
     }
 
