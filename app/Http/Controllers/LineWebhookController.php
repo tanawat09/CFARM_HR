@@ -77,7 +77,7 @@ class LineWebhookController extends Controller
             return;
         }
 
-        if ($leave->status !== \App\Enums\LeaveStatus::PENDING->value) {
+        if ($leave->status !== \App\Enums\LeaveStatus::PENDING) {
             $line->replyText($replyToken, '⚠️ คำขอลานี้ได้ถูกดำเนินการอนุมัติ/ไม่อนุมัติ ไปเรียบร้อยแล้ว');
             return;
         }
@@ -88,6 +88,9 @@ class LineWebhookController extends Controller
             return;
         }
 
+        $employeeName = trim(($leave->employee?->first_name ?? '') . ' ' . ($leave->employee?->last_name ?? ''));
+        $departmentName = $leave->employee?->department?->name ?? '-';
+
         // Process Action
         if ($action === 'approve') {
             $leave->update([
@@ -95,7 +98,7 @@ class LineWebhookController extends Controller
                 'approved_by' => $supervisor->id,
                 'approved_at' => now(),
             ]);
-            $line->replyText($replyToken, '✅ ทำรายการ "อนุมัติ" คำขอลารายการที่ ' . $leaveId . ' สำเร็จแล้ว!');
+            $line->replyText($replyToken, "✅ คำขอลาของ คุณ $employeeName (แผนก $departmentName) ได้รับการอนุมัติเรียบร้อยแล้ว");
         } elseif ($action === 'reject') {
             $leave->update([
                 'status' => \App\Enums\LeaveStatus::REJECTED->value,
@@ -103,7 +106,7 @@ class LineWebhookController extends Controller
                 'approved_at' => now(),
                 'approval_note' => 'ทำรายการผ่าน LINE',
             ]);
-            $line->replyText($replyToken, '❌ ทำรายการ "ไม่อนุมัติ" คำขอลารายการที่ ' . $leaveId . ' สำเร็จแล้ว');
+            $line->replyText($replyToken, "❌ คำขอลาของ คุณ $employeeName (แผนก $departmentName) ไม่ได้รับการอนุมัติ");
         }
     }
 

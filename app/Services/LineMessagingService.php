@@ -198,38 +198,110 @@ class LineMessagingService
 
     public function buildLeaveApprovalPayload(string $to, LeaveRequest $leave): array
     {
-        $textMessage = $this->formatLeaveRequestMessage($leave);
+        $employee = $leave->employee;
+        $leaveType = (string) $leave->getRawOriginal('leave_type');
+        $leaveTypeName = LeavePolicy::where('key', $leaveType)->value('name') ?: $leaveType;
+        $department = $employee?->department?->name ?: '-';
+        $dateRange = $this->formatLeaveDateRange($leave);
+        $totalDays = rtrim(rtrim(number_format((float) $leave->total_days, 3, '.', ''), '0'), '.');
+        $reason = Str::limit((string) ($leave->reason ?: '-'), 300);
+        $employeeName = trim(($employee?->first_name ?: '') . ' ' . ($employee?->last_name ?: ''));
+        $employeeCode = $employee?->employee_code ?: '-';
 
         return [
             'to' => $to,
             'messages' => [
                 [
-                    'type' => 'text',
-                    'text' => $textMessage,
-                ],
-                [
-                    'type' => 'template',
-                    'altText' => 'คุณมีคำขอลาใหม่ โปรดเปิดดูในแอปพลิเคชัน LINE บนมือถือ เพื่อดำเนินการอนุมัติ',
-                    'template' => [
-                        'type' => 'buttons',
-                        'text' => 'คุณต้องการดำเนินการอย่างไรกับคำขอลานี้?',
-                        'actions' => [
-                            [
-                                'type' => 'postback',
-                                'label' => '✅ อนุมัติ',
-                                'data' => 'action=approve&id=' . $leave->id,
-                                'displayText' => 'อนุมัติคำขอลารายการที่ ' . $leave->id,
-                            ],
-                            [
-                                'type' => 'postback',
-                                'label' => '❌ ไม่อนุมัติ',
-                                'data' => 'action=reject&id=' . $leave->id,
-                                'displayText' => 'ไม่อนุมัติคำขอลารายการที่ ' . $leave->id,
-                            ],
+                    'type' => 'flex',
+                    'altText' => "มีคำขอลาใหม่จาก $employeeName รอการอนุมัติ",
+                    'contents' => [
+                        'type' => 'bubble',
+                        'header' => [
+                            'type' => 'box',
+                            'layout' => 'vertical',
+                            'contents' => [
+                                [
+                                    'type' => 'text',
+                                    'text' => '📝 มีคำขอลาใหม่รออนุมัติ',
+                                    'weight' => 'bold',
+                                    'size' => 'lg',
+                                    'color' => '#1DB446'
+                                ]
+                            ]
                         ],
-                    ],
+                        'body' => [
+                            'type' => 'box',
+                            'layout' => 'vertical',
+                            'spacing' => 'md',
+                            'contents' => [
+                                $this->createFlexRow('พนักงาน', "$employeeName ($employeeCode)"),
+                                $this->createFlexRow('แผนก', $department),
+                                $this->createFlexRow('ประเภทลา', $leaveTypeName),
+                                $this->createFlexRow('ช่วงลา', $dateRange),
+                                $this->createFlexRow('จำนวน', ($totalDays ?: '0') . ' วัน'),
+                                $this->createFlexRow('เหตุผล', $reason),
+                            ]
+                        ],
+                        'footer' => [
+                            'type' => 'box',
+                            'layout' => 'horizontal',
+                            'spacing' => 'sm',
+                            'contents' => [
+                                [
+                                    'type' => 'button',
+                                    'style' => 'primary',
+                                    'height' => 'sm',
+                                    'color' => '#1DB446',
+                                    'action' => [
+                                        'type' => 'postback',
+                                        'label' => '✅ อนุมัติ',
+                                        'data' => "action=approve&id={$leave->id}",
+                                        'displayText' => 'ยืนยันอนุมัติคำขอลาของ ' . $employeeName
+                                    ]
+                                ],
+                                [
+                                    'type' => 'button',
+                                    'style' => 'secondary',
+                                    'height' => 'sm',
+                                    'color' => '#EF4444',
+                                    'action' => [
+                                        'type' => 'postback',
+                                        'label' => '❌ ไม่อนุมัติ',
+                                        'data' => "action=reject&id={$leave->id}",
+                                        'displayText' => 'ปฏิเสธคำขอลาของ ' . $employeeName
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
                 ]
             ],
+        ];
+    }
+
+    private function createFlexRow(string $label, string $value): array
+    {
+        return [
+            'type' => 'box',
+            'layout' => 'baseline',
+            'spacing' => 'sm',
+            'contents' => [
+                [
+                    'type' => 'text',
+                    'text' => $label,
+                    'color' => '#aaaaaa',
+                    'size' => 'sm',
+                    'flex' => 2
+                ],
+                [
+                    'type' => 'text',
+                    'text' => $value,
+                    'wrap' => true,
+                    'color' => '#666666',
+                    'size' => 'sm',
+                    'flex' => 5
+                ]
+            ]
         ];
     }
 }
