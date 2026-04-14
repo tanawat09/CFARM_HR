@@ -68,6 +68,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Settings - LINE Integration
         Route::get('/settings/line', [SettingController::class, 'lineSettings'])->name('settings.line');
         Route::post('/settings/line', [SettingController::class, 'updateLineSettings'])->name('settings.line.update');
+
+        // Settings - Company Holidays
+        Route::get('/settings/holidays', [SettingController::class, 'holidaySettings'])->name('settings.holidays');
+        Route::post('/settings/holidays', [SettingController::class, 'storeHoliday'])->name('settings.holidays.store');
+        Route::put('/settings/holidays/{holiday}', [SettingController::class, 'updateHoliday'])->name('settings.holidays.update');
+        Route::delete('/settings/holidays/{holiday}', [SettingController::class, 'destroyHoliday'])->name('settings.holidays.destroy');
     });
 
     // Leave Requests

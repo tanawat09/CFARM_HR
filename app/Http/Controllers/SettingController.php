@@ -106,6 +106,49 @@ class SettingController extends Controller
             ['value' => $validated['channel_access_token'], 'group' => 'line']
         );
 
-        return redirect()->back()->with('message', 'อัปเดตการตั้งค่า LINE เรียบร้อยแล้ว');
+    }
+
+    public function holidaySettings()
+    {
+        $holidays = \App\Models\CompanyHoliday::orderBy('date', 'asc')->get();
+
+        return Inertia::render('Settings/Holidays', [
+            'holidays' => $holidays,
+        ]);
+    }
+
+    public function storeHoliday(Request $request)
+    {
+        $validated = $request->validate([
+            'date' => 'required|date|unique:company_holidays,date',
+            'name' => 'required|string|max:150',
+        ], [
+            'date.unique' => 'มีวันหยุดในวันนี้อยู่แล้ว',
+        ]);
+
+        \App\Models\CompanyHoliday::create($validated);
+
+        return redirect()->back()->with('message', 'เพิ่มวันหยุดประจำปีเรียบร้อยแล้ว');
+    }
+
+    public function updateHoliday(Request $request, \App\Models\CompanyHoliday $holiday)
+    {
+        $validated = $request->validate([
+            'date' => 'required|date|unique:company_holidays,date,' . $holiday->id,
+            'name' => 'required|string|max:150',
+        ], [
+            'date.unique' => 'มีวันหยุดในวันนี้อยู่แล้ว',
+        ]);
+
+        $holiday->update($validated);
+
+        return redirect()->back()->with('message', 'อัปเดตวันหยุดเรียบร้อยแล้ว');
+    }
+
+    public function destroyHoliday(\App\Models\CompanyHoliday $holiday)
+    {
+        $holiday->delete();
+
+        return redirect()->back()->with('message', 'ลบวันหยุดเรียบร้อยแล้ว');
     }
 }
