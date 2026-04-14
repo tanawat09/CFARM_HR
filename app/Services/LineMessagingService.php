@@ -157,4 +157,79 @@ class LineMessagingService
 
         return $startDate === $endDate ? $startDate : $startDate . ' ถึง ' . $endDate;
     }
+
+    public function pushLeaveApprovalButtons(string $to, LeaveRequest $leave): bool
+    {
+        $token = $this->channelAccessToken ?: \App\Models\Setting::where('key', 'LINE_CHANNEL_ACCESS_TOKEN')->value('value') ?: config('services.line.channel_access_token');
+
+        if (blank($token)) {
+            Log::warning('LINE push skipped because LINE_CHANNEL_ACCESS_TOKEN is not configured.');
+
+            return false;
+        }
+
+        try {
+            $response = Http::withToken($token)
+                ->acceptJson()
+                ->asJson()
+                ->timeout(10)
+                ->post(self::PUSH_ENDPOINT, $this->buildLeaveApprovalPayload($to, $leave));
+
+            if ($response->failed()) {
+                Log::error('LINE push buttons failed.', [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                    'to' => $to,
+                ]);
+
+                return false;
+            }
+
+            return true;
+        } catch (Throwable $exception) {
+            Log::error('LINE push buttons threw an exception.', [
+                'message' => $exception->getMessage(),
+                'to' => $to,
+            ]);
+
+            return false;
+        }
+    }
+
+    public function buildLeaveApprovalPayload(string $to, LeaveRequest $leave): array
+    {
+        $textMessage = $this->formatLeaveRequestMessage($leave);
+
+        return [
+            'to' => $to,
+            'messages' => [
+                [
+                    'type' => 'text',
+                    'text' => $textMessage,
+                ],
+                [
+                    'type' => 'template',
+                    'altText' => 'คุณมีคำขอลาใหม่ โปรดเปิดดูในแอปพลิเคชัน LINE บนมือถือ เพื่อดำเนินการอนุมัติ',
+                    'template' => [
+                        'type' => 'buttons',
+                        'text' => 'คุณต้องการดำเนินการอย่างไรกับคำขอลานี้?',
+                        'actions' => [
+                            [
+                                'type' => 'postback',
+                                'label' => '✅ อนุมัติ',
+                                'data' => 'action=approve&id=' . $leave->id,
+                                'displayText' => 'อนุมัติคำขอลารายการที่ ' . $leave->id,
+                            ],
+                            [
+                                'type' => 'postback',
+                                'label' => '❌ ไม่อนุมัติ',
+                                'data' => 'action=reject&id=' . $leave->id,
+                                'displayText' => 'ไม่อนุมัติคำขอลารายการที่ ' . $leave->id,
+                            ],
+                        ],
+                    ],
+                ]
+            ],
+        ];
+    }
 }

@@ -24,29 +24,87 @@ class LineWebhookController extends Controller
         }
 
         foreach ((array) $request->input('events', []) as $event) {
-            $userId = data_get($event, 'source.userId');
-            $replyToken = data_get($event, 'replyToken');
+            $eventType = data_get($event, 'type');
 
-            if (!$userId) {
-                continue;
-            }
-
-            Log::info('Received LINE webhook userId.', [
-                'line_user_id' => $userId,
-                'event_type' => data_get($event, 'type'),
-            ]);
-
-            if ($replyToken) {
-                $line->replyText($replyToken, implode("\n", [
-                    'LINE userId ของคุณคือ',
-                    $userId,
-                    '',
-                    'นำค่านี้ไปกรอกในช่อง LINE userId ของข้อมูลพนักงานหัวหน้างาน',
-                ]));
+            if ($eventType === 'postback') {
+                $this->handlePostback($event, $line);
+            } elseif ($eventType === 'message') {
+                $this->handleMessage($event, $line);
             }
         }
 
         return response('', 200);
+    }
+
+    private function handleMessage(array $event, LineMessagingService $line): void
+    {
+        $userId = data_get($event, 'source.userId');
+        $replyToken = data_get($event, 'replyToken');
+
+        if ($userId && $replyToken) {
+            $line->replyText($replyToken, implode("\n", [
+                'LINE userId ของคุณคือ',
+                $userId,
+                '',
+                'นำค่านี้ไปกรอกในช่อง LINE userId ของข้อมูลพนักงานหัวหน้างาน',
+            ]));
+        }
+    }
+
+    private function handlePostback(array $event, LineMessagingService $line): void
+    {
+        $userId = data_get($event, 'source.userId');
+        $replyToken = data_get($event, 'replyToken');
+        $data = data_get($event, 'postback.data', '');
+
+        parse_str($data, $parsedData);
+        $action = $parsedData['action'] ?? null;
+        $leaveId = $parsedData['id'] ?? null;
+
+        if (!$userId || !$replyToken || !$action || !$leaveId) {
+            return;
+        }
+
+        $supervisor = \App\Models\Employee::where('line_user_id', $userId)->first();
+        if (!$supervisor) {
+            $line->replyText($replyToken, '❌ ไม่พบข้อมูลพนักงานของคุณในระบบ กรุณาตรวจสอบ LINE userId ในระบบ HR');
+            return;
+        }
+
+        $leave = \App\Models\LeaveRequest::find($leaveId);
+        if (!$leave) {
+            $line->replyText($replyToken, '❌ ไม่พบข้อมูลคำขอลานี้ หรือคำขอลาถูกลบไปแล้ว');
+            return;
+        }
+
+        if ($leave->status !== \App\Enums\LeaveStatus::PENDING->value) {
+            $line->replyText($replyToken, '⚠️ คำขอลานี้ได้ถูกดำเนินการอนุมัติ/ไม่อนุมัติ ไปเรียบร้อยแล้ว');
+            return;
+        }
+
+        // Verify supervisor
+        if ($leave->employee->supervisor_id !== $supervisor->id) {
+            $line->replyText($replyToken, '❌ คุณไม่มีสิทธิ์อนุมัติคำขอลานี้ เนื่องจากไม่ได้เป็นหัวหน้างานโดยตรง');
+            return;
+        }
+
+        // Process Action
+        if ($action === 'approve') {
+            $leave->update([
+                'status' => \App\Enums\LeaveStatus::APPROVED->value,
+                'approved_by' => $supervisor->id,
+                'approved_at' => now(),
+            ]);
+            $line->replyText($replyToken, '✅ ทำรายการ "อนุมัติ" คำขอลารายการที่ ' . $leaveId . ' สำเร็จแล้ว!');
+        } elseif ($action === 'reject') {
+            $leave->update([
+                'status' => \App\Enums\LeaveStatus::REJECTED->value,
+                'approved_by' => $supervisor->id,
+                'approved_at' => now(),
+                'approval_note' => 'ทำรายการผ่าน LINE',
+            ]);
+            $line->replyText($replyToken, '❌ ทำรายการ "ไม่อนุมัติ" คำขอลารายการที่ ' . $leaveId . ' สำเร็จแล้ว');
+        }
     }
 
     private function isValidSignature(string $body, string $signature): bool
