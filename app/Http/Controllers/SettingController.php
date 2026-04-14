@@ -76,4 +76,36 @@ class SettingController extends Controller
 
         return redirect()->back()->with('message', 'ลบประเภทการลาเรียบร้อย');
     }
+
+    public function lineSettings()
+    {
+        $channelSecret = \App\Models\Setting::where('key', 'LINE_CHANNEL_SECRET')->value('value') ?: config('services.line.channel_secret');
+        $channelAccessToken = \App\Models\Setting::where('key', 'LINE_CHANNEL_ACCESS_TOKEN')->value('value') ?: config('services.line.channel_access_token');
+        
+        return Inertia::render('Settings/Line', [
+            'channelSecret' => $channelSecret,
+            'channelAccessToken' => $channelAccessToken,
+            'webhookUrl' => route('line.webhook'),
+        ]);
+    }
+
+    public function updateLineSettings(Request $request)
+    {
+        $validated = $request->validate([
+            'channel_secret' => 'nullable|string|max:255',
+            'channel_access_token' => 'nullable|string',
+        ]);
+
+        \App\Models\Setting::updateOrCreate(
+            ['key' => 'LINE_CHANNEL_SECRET'],
+            ['value' => $validated['channel_secret'], 'group' => 'line']
+        );
+
+        \App\Models\Setting::updateOrCreate(
+            ['key' => 'LINE_CHANNEL_ACCESS_TOKEN'],
+            ['value' => $validated['channel_access_token'], 'group' => 'line']
+        );
+
+        return redirect()->back()->with('message', 'อัปเดตการตั้งค่า LINE เรียบร้อยแล้ว');
+    }
 }

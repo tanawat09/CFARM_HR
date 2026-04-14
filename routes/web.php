@@ -64,6 +64,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/settings/leave/policies', [SettingController::class, 'storePolicy'])->name('settings.leave.store');
         Route::put('/settings/leave/policies/{policy}', [SettingController::class, 'updatePolicy'])->name('settings.leave.update');
         Route::delete('/settings/leave/policies/{policy}', [SettingController::class, 'destroyPolicy'])->name('settings.leave.destroy');
+
+        // Settings - LINE Integration
+        Route::get('/settings/line', [SettingController::class, 'lineSettings'])->name('settings.line');
+        Route::post('/settings/line', [SettingController::class, 'updateLineSettings'])->name('settings.line.update');
     });
 
     // Leave Requests
