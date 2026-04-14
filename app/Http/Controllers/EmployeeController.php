@@ -88,6 +88,7 @@ class EmployeeController extends Controller
             'branch_id' => 'nullable|exists:worksites,id',
             'shift_id' => 'required|exists:shifts,id',
             'supervisor_id' => 'nullable|exists:employees,id',
+            'line_user_id' => 'nullable|string|max:255',
             'hire_date' => 'required|date',
         ]);
 
@@ -111,6 +112,7 @@ class EmployeeController extends Controller
             'branch_id' => $validated['branch_id'],
             'shift_id' => $validated['shift_id'],
             'supervisor_id' => $validated['supervisor_id'] ?? null,
+            'line_user_id' => $validated['line_user_id'] ?? null,
             'employment_status' => EmploymentStatus::ACTIVE->value,
             'check_in_mode' => CheckInMode::GEOFENCE->value,
             'hire_date' => $validated['hire_date'],
@@ -159,6 +161,7 @@ class EmployeeController extends Controller
             'branch_id'          => 'nullable|exists:worksites,id',
             'shift_id'           => 'required|exists:shifts,id',
             'supervisor_id'      => 'nullable|exists:employees,id',
+            'line_user_id'       => 'nullable|string|max:255',
             'hire_date'          => 'required|date',
             'employment_status'  => 'required|string',
             'password'           => ['nullable', 'confirmed', Rules\Password::defaults()],

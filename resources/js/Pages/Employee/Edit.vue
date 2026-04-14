@@ -23,6 +23,7 @@ const form = useForm({
     branch_id: props.employee.branch_id || '',
     shift_id: props.employee.shift_id || '',
     supervisor_id: props.employee.supervisor_id || '',
+    line_user_id: props.employee.line_user_id || '',
     hire_date: props.employee.hire_date?.split('T')[0] || '',
     employment_status: props.employee.employment_status?.value || props.employee.employment_status || 'active',
     password: '',
@@ -130,6 +131,12 @@ const submit = () => {
                                         <option v-for="sup in supervisors" :key="sup.id" :value="sup.id">{{ sup.first_name }} {{ sup.last_name }}</option>
                                     </select>
                                     <InputError :message="form.errors.supervisor_id" class="mt-1" />
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block font-bold text-xs text-slate-500 mb-1">LINE userId</label>
+                                    <input type="text" v-model="form.line_user_id" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500" placeholder="เช่น Uxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+                                    <p class="mt-1 text-xs text-slate-400">กรอกเฉพาะพนักงานที่ต้องรับแจ้งเตือนจาก LINE OA เช่น หัวหน้างาน</p>
+                                    <InputError :message="form.errors.line_user_id" class="mt-1" />
                                 </div>
                             </div>
                         </div>

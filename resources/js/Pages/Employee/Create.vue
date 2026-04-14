@@ -25,6 +25,7 @@ const form = useForm({
     branch_id: '',
     shift_id: '',
     supervisor_id: '',
+    line_user_id: '',
     hire_date: new Date().toISOString().split('T')[0]
 });
 
@@ -147,6 +148,12 @@ const submit = () => {
                                     <option v-for="sup in supervisors" :key="sup.id" :value="sup.id">{{ sup.first_name }} {{ sup.last_name }}</option>
                                 </select>
                                 <InputError :message="form.errors.supervisor_id" class="mt-2" />
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block font-bold text-sm text-slate-700 mb-2">LINE userId</label>
+                                <input type="text" v-model="form.line_user_id" class="w-full rounded-xl border-slate-200 shadow-sm focus:border-teal-500 focus:ring-teal-500 transition" placeholder="เช่น Uxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+                                <p class="mt-1 text-xs text-slate-400">กรอกเฉพาะพนักงานที่ต้องรับแจ้งเตือนจาก LINE OA เช่น หัวหน้างาน</p>
+                                <InputError :message="form.errors.line_user_id" class="mt-2" />
                             </div>
                         </div>
 

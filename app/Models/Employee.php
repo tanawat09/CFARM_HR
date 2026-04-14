@@ -8,7 +8,7 @@ class Employee extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
     use \Illuminate\Database\Eloquent\SoftDeletes;
-    protected $fillable = ['user_id', 'employee_code', 'first_name', 'last_name', 'phone', 'department_id', 'position_id', 'branch_id', 'supervisor_id', 'shift_id', 'employment_status', 'check_in_mode', 'profile_photo', 'hire_date'];
+    protected $fillable = ['user_id', 'employee_code', 'first_name', 'last_name', 'phone', 'department_id', 'position_id', 'branch_id', 'supervisor_id', 'line_user_id', 'shift_id', 'employment_status', 'check_in_mode', 'profile_photo', 'hire_date'];
     
     protected static function booted()
     {

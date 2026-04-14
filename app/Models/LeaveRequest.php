@@ -12,7 +12,7 @@ class LeaveRequest extends Model
         return [
             'start_date' => 'date', 
             'end_date' => 'date', 
-            'total_days' => 'decimal:1', 
+            'total_days' => 'decimal:3',
             'approved_at' => 'datetime', 
             'status' => \App\Enums\LeaveStatus::class,
             'leave_type' => \App\Enums\LeaveType::class

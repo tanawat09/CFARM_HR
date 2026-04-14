@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Models\LeaveRequest;
 use App\Models\LeavePolicy;
 use App\Models\Employee;
+use App\Jobs\SendLeaveRequestLineNotification;
 use App\Enums\LeaveType;
 use App\Enums\LeaveStatus;
 use App\Enums\EmploymentStatus;
@@ -209,7 +210,7 @@ class LeaveController extends Controller
             $attachmentPath = $request->file('attachment')->store('leave-attachments', 'public');
         }
 
-        LeaveRequest::create([
+        $leave = LeaveRequest::create([
             'employee_id'     => $employee->id,
             'leave_type'      => $validated['leave_type'],
             'leave_format'    => $validated['leave_format'],
@@ -222,6 +223,8 @@ class LeaveController extends Controller
             'status'          => LeaveStatus::PENDING->value,
             'attachment_path' => $attachmentPath,
         ]);
+
+        SendLeaveRequestLineNotification::dispatch($leave->id);
 
         return redirect()->route('leave.index')->with('message', 'ส่งคำขอลาเรียบร้อยแล้ว');
     }

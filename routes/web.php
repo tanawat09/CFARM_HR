@@ -14,6 +14,7 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\LeaveApprovalController;
 use App\Http\Controllers\ShiftController;
+use App\Http\Controllers\LineWebhookController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -21,6 +22,8 @@ use Inertia\Inertia;
 Route::get('/', function () {
     return redirect()->route('login');
 });
+
+Route::post('/line/webhook', LineWebhookController::class)->name('line.webhook');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard
