@@ -20,7 +20,7 @@ class LineMessagingService
 
     public function pushText(string $to, string $text): bool
     {
-        $token = $this->channelAccessToken ?: config('services.line.channel_access_token');
+        $token = $this->channelAccessToken ?: \App\Models\Setting::where('key', 'LINE_CHANNEL_ACCESS_TOKEN')->value('value') ?: config('services.line.channel_access_token');
 
         if (blank($token)) {
             Log::warning('LINE push skipped because LINE_CHANNEL_ACCESS_TOKEN is not configured.');
@@ -58,7 +58,7 @@ class LineMessagingService
 
     public function replyText(string $replyToken, string $text): bool
     {
-        $token = $this->channelAccessToken ?: config('services.line.channel_access_token');
+        $token = $this->channelAccessToken ?: \App\Models\Setting::where('key', 'LINE_CHANNEL_ACCESS_TOKEN')->value('value') ?: config('services.line.channel_access_token');
 
         if (blank($token)) {
             Log::warning('LINE reply skipped because LINE_CHANNEL_ACCESS_TOKEN is not configured.');

@@ -51,7 +51,7 @@ class LineWebhookController extends Controller
 
     private function isValidSignature(string $body, string $signature): bool
     {
-        $secret = (string) config('services.line.channel_secret');
+        $secret = (string) (\App\Models\Setting::where('key', 'LINE_CHANNEL_SECRET')->value('value') ?: config('services.line.channel_secret'));
 
         if (blank($secret) || blank($signature)) {
             return false;
@@ -64,7 +64,7 @@ class LineWebhookController extends Controller
 
     private function lineSecretFingerprint(): ?string
     {
-        $secret = (string) config('services.line.channel_secret');
+        $secret = (string) (\App\Models\Setting::where('key', 'LINE_CHANNEL_SECRET')->value('value') ?: config('services.line.channel_secret'));
 
         return blank($secret) ? null : substr(hash('sha256', $secret), 0, 12);
     }
