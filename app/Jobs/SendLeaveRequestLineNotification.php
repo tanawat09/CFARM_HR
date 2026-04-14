@@ -60,6 +60,6 @@ class SendLeaveRequestLineNotification implements ShouldQueue
             return;
         }
 
-        $line->pushText($lineUserId, $line->formatLeaveRequestMessage($leave));
+        $line->pushLeaveApprovalButtons($lineUserId, $leave);
     }
 }
