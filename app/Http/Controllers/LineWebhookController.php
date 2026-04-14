@@ -14,7 +14,11 @@ class LineWebhookController extends Controller
         $body = $request->getContent();
 
         if (!$this->isValidSignature($body, (string) $request->header('X-Line-Signature'))) {
-            Log::warning('Rejected LINE webhook because the signature is invalid.');
+            Log::warning('Rejected LINE webhook because the signature is invalid.', [
+                'line_secret_fingerprint' => $this->lineSecretFingerprint(),
+                'body_sha256' => hash('sha256', $body),
+                'signature_length' => strlen((string) $request->header('X-Line-Signature')),
+            ]);
 
             return response('Invalid signature', 403);
         }
@@ -56,5 +60,12 @@ class LineWebhookController extends Controller
         $expected = base64_encode(hash_hmac('sha256', $body, $secret, true));
 
         return hash_equals($expected, $signature);
+    }
+
+    private function lineSecretFingerprint(): ?string
+    {
+        $secret = (string) config('services.line.channel_secret');
+
+        return blank($secret) ? null : substr(hash('sha256', $secret), 0, 12);
     }
 }
