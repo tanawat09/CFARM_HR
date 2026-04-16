@@ -77,9 +77,6 @@ const totalChartLeaves = computed(() => {
                         สถิติการลางาน
                     </h2>
                     <div class="flex items-center gap-2 bg-slate-100 p-1.5 rounded-2xl w-max shadow-inner">
-                        <Link :href="route('reports.index')" class="flex items-center gap-2 px-5 py-2.5 text-sm font-bold rounded-xl transition-all text-slate-500 hover:text-slate-700 hover:bg-slate-200/50">
-                            <span class="text-lg">🕒</span> เวลาและการเข้างาน
-                        </Link>
                         <Link :href="route('reports.leaves')" class="flex items-center gap-2 px-5 py-2.5 text-sm font-black rounded-xl transition-all bg-white text-emerald-700 shadow-md ring-1 ring-slate-900/5">
                             <span class="text-lg">🏖️</span> สถิติการลางาน
                         </Link>

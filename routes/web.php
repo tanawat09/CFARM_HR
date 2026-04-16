@@ -57,7 +57,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Reports
     Route::middleware(['permission:reports.view'])->group(function () {
-        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+        Route::get('/reports', fn() => redirect()->route('reports.leaves'))->name('reports.index');
         Route::get('/reports/export', [ReportController::class, 'export'])->name('reports.export');
         Route::get('/reports/leaves', [ReportController::class, 'leaves'])->name('reports.leaves');
         Route::get('/reports/leaves/export', [ReportController::class, 'exportLeaves'])->name('reports.leaves.export');
