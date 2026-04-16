@@ -20,9 +20,30 @@ class SettingController extends Controller
             'label' => $role->label(),
         ]);
 
+        // Load saved permissions as { "role::permission": true/false }
+        $saved = \App\Models\RolePermission::all()
+            ->mapWithKeys(fn($rp) => ["{$rp->role}::{$rp->permission}" => $rp->granted]);
+
         return Inertia::render('Settings/Roles', [
             'roles' => $roles,
+            'savedPermissions' => $saved,
         ]);
+    }
+
+    public function updatePermission(Request $request)
+    {
+        $validated = $request->validate([
+            'role' => 'required|string',
+            'permission' => 'required|string',
+            'granted' => 'required|boolean',
+        ]);
+
+        \App\Models\RolePermission::updateOrCreate(
+            ['role' => $validated['role'], 'permission' => $validated['permission']],
+            ['granted' => $validated['granted']]
+        );
+
+        return response()->json(['success' => true]);
     }
 
     public function leaveSettings()

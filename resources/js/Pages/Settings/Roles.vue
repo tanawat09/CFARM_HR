@@ -1,65 +1,77 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, usePage, router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { reactive, computed, ref } from 'vue';
 
-defineProps({
+const props = defineProps({
     roles: Array,
+    savedPermissions: Object,
 });
+
+const page = usePage();
+const userRole = computed(() => {
+    const role = page.props.auth.user.role;
+    return typeof role === 'object' ? role.value : role;
+});
+const isAdmin = computed(() => userRole.value === 'admin');
+
+const savingKey = ref(null);
+const saveSuccess = ref(null);
 
 const permissions = [
     {
         group: 'การจัดการระบบ',
         icon: '⚙️',
         items: [
-            { name: 'เข้าถึงหน้าตั้งค่าระบบ', admin: true, hr: true, md: false, deputy: false, manager: false, supervisor: false, employee: false },
-            { name: 'จัดการนโยบายการลา', admin: true, hr: true, md: false, deputy: false, manager: false, supervisor: false, employee: false },
-            { name: 'จัดการวันหยุดบริษัท', admin: true, hr: true, md: false, deputy: false, manager: false, supervisor: false, employee: false },
-            { name: 'ตั้งค่า LINE Messaging', admin: true, hr: true, md: false, deputy: false, manager: false, supervisor: false, employee: false },
-            { name: 'จัดการสิทธิ์การใช้งาน', admin: true, hr: false, md: false, deputy: false, manager: false, supervisor: false, employee: false },
+            { key: 'system.settings', name: 'เข้าถึงหน้าตั้งค่าระบบ', defaults: { admin: true, hr: true, managing_director: false, deputy_md: false, manager: false, supervisor: false, employee: false } },
+            { key: 'system.leave_policy', name: 'จัดการนโยบายการลา', defaults: { admin: true, hr: true, managing_director: false, deputy_md: false, manager: false, supervisor: false, employee: false } },
+            { key: 'system.holidays', name: 'จัดการวันหยุดบริษัท', defaults: { admin: true, hr: true, managing_director: false, deputy_md: false, manager: false, supervisor: false, employee: false } },
+            { key: 'system.line', name: 'ตั้งค่า LINE Messaging', defaults: { admin: true, hr: true, managing_director: false, deputy_md: false, manager: false, supervisor: false, employee: false } },
+            { key: 'system.roles', name: 'จัดการสิทธิ์การใช้งาน', defaults: { admin: true, hr: false, managing_director: false, deputy_md: false, manager: false, supervisor: false, employee: false } },
         ],
     },
     {
         group: 'การจัดการบุคลากร',
         icon: '👥',
         items: [
-            { name: 'เพิ่ม/แก้ไข/ลบ พนักงาน', admin: true, hr: true, md: false, deputy: false, manager: false, supervisor: false, employee: false },
-            { name: 'จัดการแผนก', admin: true, hr: true, md: false, deputy: false, manager: false, supervisor: false, employee: false },
-            { name: 'จัดการตำแหน่ง', admin: true, hr: true, md: false, deputy: false, manager: false, supervisor: false, employee: false },
-            { name: 'จัดการกะทำงาน', admin: true, hr: true, md: false, deputy: false, manager: false, supervisor: false, employee: false },
-            { name: 'จัดการสาขา', admin: true, hr: true, md: false, deputy: false, manager: false, supervisor: false, employee: false },
+            { key: 'hr.employees', name: 'เพิ่ม/แก้ไข/ลบ พนักงาน', defaults: { admin: true, hr: true, managing_director: false, deputy_md: false, manager: false, supervisor: false, employee: false } },
+            { key: 'hr.departments', name: 'จัดการแผนก', defaults: { admin: true, hr: true, managing_director: false, deputy_md: false, manager: false, supervisor: false, employee: false } },
+            { key: 'hr.positions', name: 'จัดการตำแหน่ง', defaults: { admin: true, hr: true, managing_director: false, deputy_md: false, manager: false, supervisor: false, employee: false } },
+            { key: 'hr.shifts', name: 'จัดการกะทำงาน', defaults: { admin: true, hr: true, managing_director: false, deputy_md: false, manager: false, supervisor: false, employee: false } },
+            { key: 'hr.worksites', name: 'จัดการสาขา', defaults: { admin: true, hr: true, managing_director: false, deputy_md: false, manager: false, supervisor: false, employee: false } },
         ],
     },
     {
         group: 'การอนุมัติ',
         icon: '✅',
         items: [
-            { name: 'อนุมัติ/ไม่อนุมัติ การลา', admin: true, hr: true, md: true, deputy: true, manager: true, supervisor: true, employee: false },
-            { name: 'อนุมัติผ่าน LINE', admin: true, hr: true, md: true, deputy: true, manager: true, supervisor: true, employee: false },
-            { name: 'ดูรายการรออนุมัติ', admin: true, hr: true, md: true, deputy: true, manager: true, supervisor: true, employee: false },
+            { key: 'approval.leave', name: 'อนุมัติ/ไม่อนุมัติ การลา', defaults: { admin: true, hr: true, managing_director: true, deputy_md: true, manager: true, supervisor: true, employee: false } },
+            { key: 'approval.line', name: 'อนุมัติผ่าน LINE', defaults: { admin: true, hr: true, managing_director: true, deputy_md: true, manager: true, supervisor: true, employee: false } },
+            { key: 'approval.view', name: 'ดูรายการรออนุมัติ', defaults: { admin: true, hr: true, managing_director: true, deputy_md: true, manager: true, supervisor: true, employee: false } },
         ],
     },
     {
         group: 'การลาหยุด',
         icon: '🗓️',
         items: [
-            { name: 'สร้างคำขอลา', admin: true, hr: true, md: true, deputy: true, manager: true, supervisor: true, employee: true },
-            { name: 'ดูประวัติการลาตัวเอง', admin: true, hr: true, md: true, deputy: true, manager: true, supervisor: true, employee: true },
+            { key: 'leave.create', name: 'สร้างคำขอลา', defaults: { admin: true, hr: true, managing_director: true, deputy_md: true, manager: true, supervisor: true, employee: true } },
+            { key: 'leave.view_own', name: 'ดูประวัติการลาตัวเอง', defaults: { admin: true, hr: true, managing_director: true, deputy_md: true, manager: true, supervisor: true, employee: true } },
         ],
     },
     {
         group: 'การลงเวลา',
         icon: '🕒',
         items: [
-            { name: 'ลงเวลาเข้า-ออกงาน (GPS)', admin: true, hr: true, md: true, deputy: true, manager: true, supervisor: true, employee: true },
-            { name: 'ดูประวัติการลงเวลาตัวเอง', admin: true, hr: true, md: true, deputy: true, manager: true, supervisor: true, employee: true },
+            { key: 'attendance.checkin', name: 'ลงเวลาเข้า-ออกงาน (GPS)', defaults: { admin: true, hr: true, managing_director: true, deputy_md: true, manager: true, supervisor: true, employee: true } },
+            { key: 'attendance.history', name: 'ดูประวัติการลงเวลาตัวเอง', defaults: { admin: true, hr: true, managing_director: true, deputy_md: true, manager: true, supervisor: true, employee: true } },
         ],
     },
     {
         group: 'รายงาน',
         icon: '📊',
         items: [
-            { name: 'ดูรายงานสรุป', admin: true, hr: true, md: false, deputy: false, manager: false, supervisor: false, employee: false },
-            { name: 'ส่งออกรายงาน CSV', admin: true, hr: true, md: false, deputy: false, manager: false, supervisor: false, employee: false },
+            { key: 'reports.view', name: 'ดูรายงานสรุป', defaults: { admin: true, hr: true, managing_director: false, deputy_md: false, manager: false, supervisor: false, employee: false } },
+            { key: 'reports.export', name: 'ส่งออกรายงาน CSV', defaults: { admin: true, hr: true, managing_director: false, deputy_md: false, manager: false, supervisor: false, employee: false } },
         ],
     },
 ];
@@ -67,12 +79,61 @@ const permissions = [
 const roleColumns = [
     { key: 'admin', label: 'Admin', color: 'bg-red-500' },
     { key: 'hr', label: 'HR', color: 'bg-purple-500' },
-    { key: 'md', label: 'กรรมการผู้จัดการ', color: 'bg-amber-500' },
-    { key: 'deputy', label: 'รองกรรมการ', color: 'bg-orange-500' },
+    { key: 'managing_director', label: 'กรรมการผู้จัดการ', color: 'bg-amber-500' },
+    { key: 'deputy_md', label: 'รองกรรมการ', color: 'bg-orange-500' },
     { key: 'manager', label: 'ผู้จัดการ', color: 'bg-blue-500' },
     { key: 'supervisor', label: 'หัวหน้างาน', color: 'bg-teal-500' },
     { key: 'employee', label: 'พนักงาน', color: 'bg-slate-400' },
 ];
+
+// Build reactive state from defaults + saved DB overrides
+const permState = reactive({});
+permissions.forEach(section => {
+    section.items.forEach(perm => {
+        roleColumns.forEach(col => {
+            const dbKey = `${col.key}::${perm.key}`;
+            const defaultVal = perm.defaults[col.key] ?? false;
+            permState[`${perm.key}::${col.key}`] = props.savedPermissions?.[dbKey] !== undefined
+                ? props.savedPermissions[dbKey]
+                : defaultVal;
+        });
+    });
+});
+
+const getPermValue = (permKey, roleKey) => {
+    return permState[`${permKey}::${roleKey}`] ?? false;
+};
+
+const togglePermission = async (permKey, roleKey) => {
+    if (!isAdmin.value) return;
+    const stateKey = `${permKey}::${roleKey}`;
+    const newValue = !permState[stateKey];
+    permState[stateKey] = newValue;
+    savingKey.value = stateKey;
+    saveSuccess.value = null;
+
+    try {
+        await fetch(route('settings.roles.update'), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+                role: roleKey,
+                permission: permKey,
+                granted: newValue,
+            }),
+        });
+        saveSuccess.value = stateKey;
+        setTimeout(() => { if (saveSuccess.value === stateKey) saveSuccess.value = null; }, 1200);
+    } catch (e) {
+        permState[stateKey] = !newValue; // revert
+    } finally {
+        savingKey.value = null;
+    }
+};
 </script>
 
 <template>
@@ -92,7 +153,10 @@ const roleColumns = [
                     </span>
                     <div>
                         <h2 class="font-bold text-2xl text-slate-800 leading-tight">สิทธิ์การใช้งาน</h2>
-                        <p class="text-sm text-slate-500 mt-0.5">ตารางแสดงสิทธิ์ของแต่ละบทบาทในระบบ</p>
+                        <p class="text-sm text-slate-500 mt-0.5">
+                            <template v-if="isAdmin">กดที่ไอคอนเพื่อเปิด/ปิดสิทธิ์ของแต่ละบทบาท</template>
+                            <template v-else>ตารางแสดงสิทธิ์ของแต่ละบทบาทในระบบ (เฉพาะ Admin แก้ไขได้)</template>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -113,7 +177,6 @@ const roleColumns = [
                 <div class="bg-white/80 backdrop-blur-lg overflow-hidden shadow-xl rounded-3xl border border-white/50">
                     <div class="overflow-x-auto">
                         <table class="min-w-full">
-                            <!-- Header -->
                             <thead>
                                 <tr class="bg-gradient-to-r from-slate-50 to-slate-100/50">
                                     <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider sticky left-0 bg-slate-50/90 backdrop-blur-sm z-10 min-w-[220px]">
@@ -127,11 +190,8 @@ const roleColumns = [
                                     </th>
                                 </tr>
                             </thead>
-
-                            <!-- Body -->
                             <tbody>
                                 <template v-for="(section, si) in permissions" :key="si">
-                                    <!-- Section Header -->
                                     <tr class="bg-slate-50/70">
                                         <td :colspan="roleColumns.length + 1" class="px-6 py-3">
                                             <div class="flex items-center gap-2">
@@ -140,19 +200,37 @@ const roleColumns = [
                                             </div>
                                         </td>
                                     </tr>
-
-                                    <!-- Permission Rows -->
                                     <tr v-for="(perm, pi) in section.items" :key="`${si}-${pi}`" class="border-b border-slate-100/60 hover:bg-slate-50/40 transition-colors">
                                         <td class="px-6 py-3.5 text-sm text-slate-700 font-medium sticky left-0 bg-white/90 backdrop-blur-sm z-10">
                                             {{ perm.name }}
                                         </td>
                                         <td v-for="col in roleColumns" :key="col.key" class="px-3 py-3.5 text-center">
-                                            <span v-if="perm[col.key]" class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-emerald-100 text-emerald-600">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                                            </span>
-                                            <span v-else class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-100 text-slate-300">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
-                                            </span>
+                                            <button
+                                                @click="togglePermission(perm.key, col.key)"
+                                                :disabled="!isAdmin"
+                                                :class="[
+                                                    'inline-flex items-center justify-center w-8 h-8 rounded-full transition-all duration-200',
+                                                    isAdmin ? 'cursor-pointer hover:scale-110 active:scale-95' : 'cursor-default',
+                                                    getPermValue(perm.key, col.key)
+                                                        ? 'bg-emerald-100 text-emerald-600 hover:bg-emerald-200'
+                                                        : 'bg-slate-100 text-slate-300 hover:bg-slate-200',
+                                                    savingKey === `${perm.key}::${col.key}` ? 'animate-pulse' : '',
+                                                ]"
+                                            >
+                                                <!-- Saving spinner -->
+                                                <svg v-if="savingKey === `${perm.key}::${col.key}`" class="w-4 h-4 animate-spin text-amber-500" fill="none" viewBox="0 0 24 24">
+                                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                                                </svg>
+                                                <!-- Check icon -->
+                                                <svg v-else-if="getPermValue(perm.key, col.key)" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                                </svg>
+                                                <!-- X icon -->
+                                                <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path>
+                                                </svg>
+                                            </button>
                                         </td>
                                     </tr>
                                 </template>
@@ -174,6 +252,7 @@ const roleColumns = [
                                 <li><strong>HR</strong> สามารถจัดการข้อมูลพนักงาน ตั้งค่าระบบ และอนุมัติการลาได้</li>
                                 <li><strong>กรรมการผู้จัดการ / รองกรรมการ / ผู้จัดการ / หัวหน้างาน</strong> สามารถอนุมัติการลาของผู้ใต้บังคับบัญชาได้</li>
                                 <li><strong>พนักงาน</strong> สามารถลงเวลาทำงาน สร้างคำขอลา และดูประวัติของตัวเองได้</li>
+                                <li v-if="isAdmin" class="text-amber-900 font-semibold">คุณสามารถกดที่ ✅ หรือ ❌ เพื่อเปลี่ยนสิทธิ์ได้ทันที การเปลี่ยนแปลงจะบันทึกอัตโนมัติ</li>
                             </ul>
                         </div>
                     </div>
