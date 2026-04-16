@@ -34,6 +34,7 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user() ? clone $request->user()->load('employee') : null,
+                'permissions' => $request->user() ? $request->user()->allPermissions() : [],
             ],
             'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),

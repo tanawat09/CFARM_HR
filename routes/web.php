@@ -40,41 +40,43 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/attendance/check-out', [AttendanceController::class, 'checkOut'])->name('attendance.checkOut');
     Route::get('/attendance/history', [AttendanceController::class, 'history'])->name('attendance.history');
     
-    // Admin & HR Only Routes
-    Route::middleware(['role:admin,hr'])->group(function () {
-        // Employee Management
+    // === Permission-based Routes ===
+
+    // Employee Management
+    Route::middleware(['permission:hr.employees'])->group(function () {
         Route::resource('employees', EmployeeController::class);
+    });
 
-        // Worksite Management (สาขา)
+    // Organization Structure
+    Route::middleware(['permission:hr.departments'])->group(function () {
         Route::resource('worksites', WorksiteController::class);
-
-        // Departments & Positions
         Route::resource('departments', DepartmentController::class)->except(['create', 'show', 'edit']);
         Route::resource('positions', PositionController::class)->except(['create', 'show', 'edit']);
         Route::resource('shifts', ShiftController::class)->except(['show']);
+    });
 
-        // Reports
+    // Reports
+    Route::middleware(['permission:reports.view'])->group(function () {
         Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
         Route::get('/reports/export', [ReportController::class, 'export'])->name('reports.export');
         Route::get('/reports/leaves', [ReportController::class, 'leaves'])->name('reports.leaves');
         Route::get('/reports/leaves/export', [ReportController::class, 'exportLeaves'])->name('reports.leaves.export');
+    });
 
-        // Settings Hub
+    // Settings Hub
+    Route::middleware(['permission:system.settings'])->group(function () {
         Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
         Route::get('/settings/roles', [SettingController::class, 'rolesSettings'])->name('settings.roles');
         Route::post('/settings/roles/update', [SettingController::class, 'updatePermission'])->name('settings.roles.update');
 
-        // Settings - Leave Policies CRUD
         Route::get('/settings/leave', [SettingController::class, 'leaveSettings'])->name('settings.leave');
         Route::post('/settings/leave/policies', [SettingController::class, 'storePolicy'])->name('settings.leave.store');
         Route::put('/settings/leave/policies/{policy}', [SettingController::class, 'updatePolicy'])->name('settings.leave.update');
         Route::delete('/settings/leave/policies/{policy}', [SettingController::class, 'destroyPolicy'])->name('settings.leave.destroy');
 
-        // Settings - LINE Integration
         Route::get('/settings/line', [SettingController::class, 'lineSettings'])->name('settings.line');
         Route::post('/settings/line', [SettingController::class, 'updateLineSettings'])->name('settings.line.update');
 
-        // Settings - Company Holidays
         Route::get('/settings/holidays', [SettingController::class, 'holidaySettings'])->name('settings.holidays');
         Route::post('/settings/holidays', [SettingController::class, 'storeHoliday'])->name('settings.holidays.store');
         Route::put('/settings/holidays/{holiday}', [SettingController::class, 'updateHoliday'])->name('settings.holidays.update');
@@ -84,10 +86,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Leave Requests
     Route::resource('leave', LeaveController::class);
 
-    // Leave Approvals (Supervisor, Admin, HR)
-    Route::get('/leave-approvals', [LeaveApprovalController::class, 'index'])->name('leave.approvals');
-    Route::post('/leave/{leave}/approve', [LeaveApprovalController::class, 'approve'])->name('leave.approve');
-    Route::post('/leave/{leave}/reject', [LeaveApprovalController::class, 'reject'])->name('leave.reject');
+    // Leave Approvals
+    Route::middleware(['permission:approval.leave'])->group(function () {
+        Route::get('/leave-approvals', [LeaveApprovalController::class, 'index'])->name('leave.approvals');
+        Route::post('/leave/{leave}/approve', [LeaveApprovalController::class, 'approve'])->name('leave.approve');
+        Route::post('/leave/{leave}/reject', [LeaveApprovalController::class, 'reject'])->name('leave.reject');
+    });
     
     // Overtime Requests (Stubs)
     // Route::resource('overtime', OvertimeController::class);

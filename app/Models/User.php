@@ -58,4 +58,50 @@ class User extends Authenticatable
     {
         return $this->hasOne(Employee::class);
     }
+
+    /**
+     * Check if this user has a specific permission.
+     * DB overrides take priority; otherwise use defaults.
+     */
+    public function hasPermission(string $permission): bool
+    {
+        $roleValue = $this->role instanceof UserRole ? $this->role->value : $this->role;
+
+        // Check DB override first
+        $override = \App\Models\RolePermission::where('role', $roleValue)
+            ->where('permission', $permission)
+            ->first();
+
+        if ($override) {
+            return $override->granted;
+        }
+
+        // Fall back to defaults
+        return \App\Constants\PermissionDefaults::hasDefault($roleValue, $permission);
+    }
+
+    /**
+     * Get all permissions for this user as a key => bool map.
+     */
+    public function allPermissions(): array
+    {
+        $roleValue = $this->role instanceof UserRole ? $this->role->value : $this->role;
+        $keys = \App\Constants\PermissionDefaults::allKeys();
+        $perms = [];
+
+        // Load all DB overrides in one query
+        $overrides = \App\Models\RolePermission::where('role', $roleValue)
+            ->pluck('granted', 'permission')
+            ->toArray();
+
+        foreach ($keys as $key) {
+            if (array_key_exists($key, $overrides)) {
+                $perms[$key] = (bool) $overrides[$key];
+            } else {
+                $perms[$key] = \App\Constants\PermissionDefaults::hasDefault($roleValue, $key);
+            }
+        }
+
+        return $perms;
+    }
 }

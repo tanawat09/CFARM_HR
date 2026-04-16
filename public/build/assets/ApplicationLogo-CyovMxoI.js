@@ -1,0 +1,1 @@
+import{O as e,b as t,w as n}from"./app-Bw0hB1Zr.js";import{t as r}from"./_plugin-vue_export-helper-CSBScHBl.js";var i={};function a(r,i){return e(),t(`img`,n({src:`/images/cfarm-logo.png`,alt:`CFARM Logo`},r.$attrs),null,16)}var o=r(i,[[`render`,a]]);export{o as t};
