@@ -15,7 +15,7 @@ const userRole = computed(() => {
 
 const isAdminOrHR = computed(() => userRole.value === 'admin' || userRole.value === 'hr');
 
-const isSupervisorOrAbove = computed(() => ['admin', 'hr', 'supervisor'].includes(userRole.value));
+const isSupervisorOrAbove = computed(() => ['admin', 'hr', 'supervisor', 'manager', 'deputy_md', 'managing_director'].includes(userRole.value));
 
 const menuItems = computed(() => {
     const items = [

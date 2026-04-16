@@ -61,6 +61,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Settings Hub
         Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+        Route::get('/settings/roles', [SettingController::class, 'rolesSettings'])->name('settings.roles');
 
         // Settings - Leave Policies CRUD
         Route::get('/settings/leave', [SettingController::class, 'leaveSettings'])->name('settings.leave');

@@ -13,6 +13,18 @@ class SettingController extends Controller
         return Inertia::render('Settings/Index');
     }
 
+    public function rolesSettings()
+    {
+        $roles = collect(\App\Enums\UserRole::cases())->map(fn($role) => [
+            'value' => $role->value,
+            'label' => $role->label(),
+        ]);
+
+        return Inertia::render('Settings/Roles', [
+            'roles' => $roles,
+        ]);
+    }
+
     public function leaveSettings()
     {
         $policies = LeavePolicy::orderBy('sort_order')->get();
