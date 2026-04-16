@@ -8,6 +8,11 @@ use App\Models\LeavePolicy;
 
 class SettingController extends Controller
 {
+    public function index()
+    {
+        return Inertia::render('Settings/Index');
+    }
+
     public function leaveSettings()
     {
         $policies = LeavePolicy::orderBy('sort_order')->get();

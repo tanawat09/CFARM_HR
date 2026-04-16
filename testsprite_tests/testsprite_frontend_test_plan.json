@@ -1,9 +1,9 @@
 [
   {
     "id": "TC001",
-    "title": "Employee can check in with webcam photo",
-    "description": "Verifies an authenticated employee can capture a webcam photo, submit a check-in, and see a success confirmation.",
-    "category": "Attendance Management (Check-in / Check-out)",
+    "title": "Employee can check in with GPS allowed and see checked-in status",
+    "description": "Verifies an employee can allow location access, check in successfully, and sees the UI reflect a checked-in status.",
+    "category": "Attendance Check-In/Out",
     "steps": [
       {
         "type": "action",
@@ -11,11 +11,11 @@
       },
       {
         "type": "action",
-        "description": "Fill in the email field with {{LOGIN_USER}}"
+        "description": "Fill {{LOGIN_USER}} into the email field"
       },
       {
         "type": "action",
-        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
       },
       {
         "type": "action",
@@ -23,36 +23,28 @@
       },
       {
         "type": "action",
-        "description": "Click the navigation link to open the attendance check-in/out page"
+        "description": "Click the navigation link to attendance check-in/out"
       },
       {
         "type": "action",
-        "description": "Wait for the camera preview to be available"
+        "description": "Allow location access when the browser permission prompt appears"
       },
       {
         "type": "action",
-        "description": "Capture a photo using the web camera"
-      },
-      {
-        "type": "action",
-        "description": "Select check-in"
-      },
-      {
-        "type": "action",
-        "description": "Submit attendance"
+        "description": "Perform check-in"
       },
       {
         "type": "assertion",
-        "description": "Verify a successful check-in confirmation is visible"
+        "description": "Verify the current attendance status shows the user is checked in"
       }
     ],
     "priority": "High"
   },
   {
     "id": "TC002",
-    "title": "Daily attendance check-in succeeds after webcam capture",
-    "description": "Verifies an authenticated user can open the attendance page, capture a photo via webcam, check in, and see a successful confirmation state.",
-    "category": "Daily Attendance",
+    "title": "Log in successfully and reach the dashboard",
+    "description": "Verifies a user can log in with valid credentials and lands on the dashboard successfully.",
+    "category": "User Login",
     "steps": [
       {
         "type": "action",
@@ -60,44 +52,28 @@
       },
       {
         "type": "action",
-        "description": "Fill in the email field with {{LOGIN_USER}}"
+        "description": "Fill {{LOGIN_USER}} into the email field"
       },
       {
         "type": "action",
-        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
       },
       {
         "type": "action",
         "description": "Submit the login form"
       },
       {
-        "type": "action",
-        "description": "Click the navigation link to the attendance check-in/out page"
-      },
-      {
-        "type": "action",
-        "description": "Wait for the webcam preview or camera-ready state to be displayed"
-      },
-      {
-        "type": "action",
-        "description": "Capture a photo using the webcam capture control"
-      },
-      {
-        "type": "action",
-        "description": "Submit a check-in"
-      },
-      {
         "type": "assertion",
-        "description": "Verify a check-in success confirmation is visible"
+        "description": "Verify the user lands on the dashboard"
       }
     ],
     "priority": "High"
   },
   {
     "id": "TC003",
-    "title": "Employee can sign in and reach authenticated landing",
-    "description": "Verifies an employee can log in with valid credentials and is taken to an authenticated post-login page.",
-    "category": "User Authentication",
+    "title": "Employee can check out after checking in and see checked-out status",
+    "description": "Verifies an employee can check in and then check out successfully, and the UI reflects a checked-out status at the end.",
+    "category": "Attendance Check-In/Out",
     "steps": [
       {
         "type": "action",
@@ -105,77 +81,97 @@
       },
       {
         "type": "action",
-        "description": "Fill in the email field with {{LOGIN_USER}}"
+        "description": "Fill {{LOGIN_USER}} into the email field"
       },
       {
         "type": "action",
-        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
       },
       {
         "type": "action",
         "description": "Submit the login form"
       },
       {
+        "type": "action",
+        "description": "Click the navigation link to attendance check-in/out"
+      },
+      {
+        "type": "action",
+        "description": "Allow location access when the browser permission prompt appears"
+      },
+      {
+        "type": "action",
+        "description": "Perform check-in"
+      },
+      {
+        "type": "action",
+        "description": "Perform check-out"
+      },
+      {
         "type": "assertion",
-        "description": "Verify the user is authenticated and sees a signed-in landing page state"
+        "description": "Verify the current attendance status shows the user is checked out"
       }
     ],
     "priority": "High"
   },
   {
     "id": "TC004",
-    "title": "Employee onboarding completes registration and profile update",
-    "description": "Verifies a new employee can register, land in the authenticated area, update profile details, and save successfully.",
-    "category": "Profile Management",
+    "title": "Employee can create a leave request and see it appear as pending in the list",
+    "description": "Verifies an employee can submit a leave request with required fields and then sees the new request in the list with a pending status.",
+    "category": "Leave Request Management",
     "steps": [
       {
         "type": "action",
-        "description": "Navigate to /register"
+        "description": "Navigate to /login"
       },
       {
         "type": "action",
-        "description": "Fill a valid name into the name field"
+        "description": "Fill {{LOGIN_USER}} into the email field"
       },
       {
         "type": "action",
-        "description": "Fill a unique valid email into the email field"
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
       },
       {
         "type": "action",
-        "description": "Fill a valid password into the password field"
+        "description": "Submit the login form"
       },
       {
         "type": "action",
-        "description": "Fill the same valid password into the password confirmation field"
+        "description": "Click the navigation link to leave requests"
       },
       {
         "type": "action",
-        "description": "Submit the registration form"
+        "description": "Click the action to create a new leave request"
       },
       {
         "type": "action",
-        "description": "Click the navigation link to the profile page"
+        "description": "Select a leave type"
       },
       {
         "type": "action",
-        "description": "Fill an updated value into a profile field that is editable"
+        "description": "Select a valid date range"
       },
       {
         "type": "action",
-        "description": "Save profile changes"
+        "description": "Fill Test leave reason into the reason field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the leave request form"
       },
       {
         "type": "assertion",
-        "description": "Verify a save success confirmation is visible"
+        "description": "Verify the newly created leave request appears in the leave list with a pending status"
       }
     ],
     "priority": "High"
   },
   {
     "id": "TC005",
-    "title": "Employee can check out after checking in",
-    "description": "Verifies an authenticated employee can check in and later check out with webcam capture and see a success confirmation for check-out.",
-    "category": "Attendance Management (Check-in / Check-out)",
+    "title": "Supervisor can approve a pending leave request",
+    "description": "Verifies a supervisor can create a pending leave request, approve it from the approvals queue, and the request is shown as approved.",
+    "category": "Leave Approvals",
     "steps": [
       {
         "type": "action",
@@ -183,11 +179,11 @@
       },
       {
         "type": "action",
-        "description": "Fill in the email field with {{LOGIN_USER}}"
+        "description": "Fill {{LOGIN_USER}} into the email field"
       },
       {
         "type": "action",
-        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
       },
       {
         "type": "action",
@@ -195,52 +191,52 @@
       },
       {
         "type": "action",
-        "description": "Click the navigation link to open the attendance check-in/out page"
+        "description": "Click the navigation link to leave requests"
       },
       {
         "type": "action",
-        "description": "Wait for the camera preview to be available"
+        "description": "Click the action to create a new leave request"
       },
       {
         "type": "action",
-        "description": "Capture a photo using the web camera"
+        "description": "Select a leave type"
       },
       {
         "type": "action",
-        "description": "Select check-in"
+        "description": "Select a valid date range"
       },
       {
         "type": "action",
-        "description": "Submit attendance"
+        "description": "Fill Approval test reason into the reason field"
       },
       {
         "type": "action",
-        "description": "Wait for the check-in submission to complete"
+        "description": "Submit the leave request form"
       },
       {
         "type": "action",
-        "description": "Capture a new photo using the web camera"
+        "description": "Click the navigation link to leave approvals"
       },
       {
         "type": "action",
-        "description": "Select check-out"
+        "description": "Open the pending leave request details"
       },
       {
         "type": "action",
-        "description": "Submit attendance"
+        "description": "Approve the leave request"
       },
       {
         "type": "assertion",
-        "description": "Verify a successful check-out confirmation is visible"
+        "description": "Verify the request is shown with an approved status in the approvals view"
       }
     ],
     "priority": "High"
   },
   {
     "id": "TC006",
-    "title": "Daily attendance check-out succeeds after check-in",
-    "description": "Verifies an authenticated user can check in with a captured photo and later complete check-out, ending with a visible check-out confirmation state.",
-    "category": "Daily Attendance",
+    "title": "Supervisor can reject a pending leave request with a note",
+    "description": "Verifies a supervisor can create a pending leave request, reject it with a note, and the request is shown as rejected.",
+    "category": "Leave Approvals",
     "steps": [
       {
         "type": "action",
@@ -248,11 +244,11 @@
       },
       {
         "type": "action",
-        "description": "Fill in the email field with {{LOGIN_USER}}"
+        "description": "Fill {{LOGIN_USER}} into the email field"
       },
       {
         "type": "action",
-        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
       },
       {
         "type": "action",
@@ -260,107 +256,167 @@
       },
       {
         "type": "action",
-        "description": "Click the navigation link to the attendance check-in/out page"
+        "description": "Click the navigation link to leave requests"
       },
       {
         "type": "action",
-        "description": "Wait for the webcam preview or camera-ready state to be displayed"
+        "description": "Click the action to create a new leave request"
       },
       {
         "type": "action",
-        "description": "Capture a photo using the webcam capture control"
+        "description": "Select a leave type"
       },
       {
         "type": "action",
-        "description": "Submit a check-in"
+        "description": "Select a valid date range"
       },
       {
         "type": "action",
-        "description": "Capture a new photo using the webcam capture control"
+        "description": "Fill Rejection test reason into the reason field"
       },
       {
         "type": "action",
-        "description": "Submit a check-out"
+        "description": "Submit the leave request form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to leave approvals"
+      },
+      {
+        "type": "action",
+        "description": "Open the pending leave request details"
+      },
+      {
+        "type": "action",
+        "description": "Start rejecting the leave request"
+      },
+      {
+        "type": "action",
+        "description": "Fill Not approved for schedule reasons into the rejection note field"
+      },
+      {
+        "type": "action",
+        "description": "Confirm the rejection"
       },
       {
         "type": "assertion",
-        "description": "Verify a check-out success confirmation is visible"
+        "description": "Verify the request is shown with a rejected status in the approvals view"
       }
     ],
     "priority": "High"
   },
   {
     "id": "TC007",
-    "title": "New employee can register and land in logged-in state",
-    "description": "Verifies a new user can register a new account and is automatically logged in or taken to a logged-in landing page.",
-    "category": "User Authentication",
+    "title": "Employee sees a location permission prompt when GPS is denied",
+    "description": "Verifies that denying location access prevents GPS capture and the page prompts the user to grant location permission.",
+    "category": "Attendance Check-In/Out",
     "steps": [
       {
         "type": "action",
-        "description": "Navigate to /register"
+        "description": "Navigate to /login"
       },
       {
         "type": "action",
-        "description": "Fill in the name field with Test Employee"
+        "description": "Fill {{LOGIN_USER}} into the email field"
       },
       {
         "type": "action",
-        "description": "Fill in the email field with a newly generated unique email"
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
       },
       {
         "type": "action",
-        "description": "Fill in the password field with a valid password"
+        "description": "Submit the login form"
       },
       {
         "type": "action",
-        "description": "Submit the registration form"
+        "description": "Click the navigation link to attendance check-in/out"
+      },
+      {
+        "type": "action",
+        "description": "Deny location access when the browser permission prompt appears"
       },
       {
         "type": "assertion",
-        "description": "Verify the user is in an authenticated logged-in state"
+        "description": "Verify a location permission request prompt is displayed"
       }
     ],
     "priority": "High"
   },
   {
     "id": "TC008",
-    "title": "Unauthenticated user is gated from protected attendance page",
-    "description": "Verifies a logged-out user cannot access the attendance check-in/out page and is redirected to authentication.",
-    "category": "User Authentication",
+    "title": "Dashboard shows attendance and leave summaries",
+    "description": "Verifies the dashboard renders key attendance statistics and leave summary data for an authenticated user.",
+    "category": "Dashboard Overview",
     "steps": [
       {
         "type": "action",
-        "description": "Navigate to /attendance/check-in-out"
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
       },
       {
         "type": "assertion",
-        "description": "Verify the user is prompted to authenticate before accessing protected content"
+        "description": "Verify attendance statistics are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify leave summary data is displayed"
       }
     ],
     "priority": "High"
   },
   {
     "id": "TC009",
-    "title": "Unauthenticated user is gated from protected admin dashboard",
-    "description": "Verifies a logged-out user cannot access the admin dashboard and is redirected to authentication.",
-    "category": "User Authentication",
+    "title": "Employee can view leave request list",
+    "description": "Verifies an employee can open the leave requests page and see the leave request list or an empty state.",
+    "category": "Leave Request Management",
     "steps": [
       {
         "type": "action",
-        "description": "Navigate to /dashboard"
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to leave requests"
       },
       {
         "type": "assertion",
-        "description": "Verify the user is prompted to authenticate before accessing protected content"
+        "description": "Verify the leave requests list or an empty state is displayed"
       }
     ],
     "priority": "High"
   },
   {
     "id": "TC010",
-    "title": "Employee submits a leave request and sees it in the list after refresh",
-    "description": "Verifies an authenticated employee can create a leave request with required dates and reason, see it listed, and still see it after a refresh.",
-    "category": "Leave Request Management",
+    "title": "Open reports and view report data",
+    "description": "User can navigate to reports and see leave and attendance report data displayed.",
+    "category": "Reports and Analytics",
     "steps": [
       {
         "type": "action",
@@ -380,40 +436,24 @@
       },
       {
         "type": "action",
-        "description": "Click the navigation link to the leave page"
-      },
-      {
-        "type": "action",
-        "description": "Select a valid start date in the leave start date field"
-      },
-      {
-        "type": "action",
-        "description": "Select a valid end date in the leave end date field"
-      },
-      {
-        "type": "action",
-        "description": "Fill a specific reason into the leave reason field"
-      },
-      {
-        "type": "action",
-        "description": "Submit the leave request"
-      },
-      {
-        "type": "action",
-        "description": "Press F5"
+        "description": "Click the navigation link to open reports"
       },
       {
         "type": "assertion",
-        "description": "Verify a leave request entry with the specific reason is displayed in the leave list"
+        "description": "Verify the reports view is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify leave and attendance report data is displayed"
       }
     ],
     "priority": "High"
   },
   {
     "id": "TC011",
-    "title": "Profile updates persist after refresh",
-    "description": "Verifies an authenticated user can change an editable profile field, save, refresh, and still see the updated value present.",
-    "category": "Profile Management",
+    "title": "Update profile details successfully",
+    "description": "User updates profile fields and saves, and the updated profile information is shown on the profile page.",
+    "category": "Profile Editing",
     "steps": [
       {
         "type": "action",
@@ -433,32 +473,32 @@
       },
       {
         "type": "action",
-        "description": "Click the navigation link to the profile page"
+        "description": "Click the navigation link to open the user profile"
       },
       {
         "type": "action",
-        "description": "Fill a new identifiable value into an editable profile field"
+        "description": "Fill new valid values into editable profile fields"
       },
       {
         "type": "action",
-        "description": "Save profile changes"
-      },
-      {
-        "type": "action",
-        "description": "Press F5"
+        "description": "Submit profile changes"
       },
       {
         "type": "assertion",
-        "description": "Verify the profile page shows the updated identifiable value"
+        "description": "Verify a success confirmation is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the profile page shows the updated profile information"
       }
     ],
     "priority": "High"
   },
   {
     "id": "TC012",
-    "title": "Non-admin is denied access to admin dashboard",
-    "description": "Verifies a non-admin user cannot access the admin dashboard and is shown an access denied or insufficient permissions state.",
-    "category": "Admin Dashboard",
+    "title": "Add a leave policy",
+    "description": "Verifies an authenticated admin can create a new leave policy by filling required fields and then see it appear in the policy list.",
+    "category": "Leave Policy Settings",
     "steps": [
       {
         "type": "action",
@@ -466,11 +506,11 @@
       },
       {
         "type": "action",
-        "description": "Fill in the email field with {{LOGIN_USER}}"
+        "description": "Fill {{LOGIN_USER}} into the email field"
       },
       {
         "type": "action",
-        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
       },
       {
         "type": "action",
@@ -478,20 +518,40 @@
       },
       {
         "type": "action",
-        "description": "Navigate to /dashboard"
+        "description": "Navigate to /settings/leave"
+      },
+      {
+        "type": "action",
+        "description": "Initiate adding a new leave policy"
+      },
+      {
+        "type": "action",
+        "description": "Fill Leave Policy Automation 001 into the policy name field"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid leave type for the policy"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid quota value into the quota field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the leave policy form"
       },
       {
         "type": "assertion",
-        "description": "Verify an access denied or insufficient permissions message is visible"
+        "description": "Verify Leave Policy Automation 001 appears in the leave policy list"
       }
     ],
-    "priority": "High"
+    "priority": "Medium"
   },
   {
     "id": "TC013",
-    "title": "Signed-in employee can update profile details",
-    "description": "Verifies an authenticated employee can edit profile fields and the changes save successfully.",
-    "category": "Profile Management",
+    "title": "Filter reports to refine results",
+    "description": "User applies filters on reports and the displayed results update to match the selected filters.",
+    "category": "Reports and Analytics",
     "steps": [
       {
         "type": "action",
@@ -511,28 +571,36 @@
       },
       {
         "type": "action",
-        "description": "Click the navigation link to open the user profile page"
+        "description": "Click the navigation link to open reports"
       },
       {
         "type": "action",
-        "description": "Fill in the name field with Test Employee Updated"
+        "description": "Select a report type to view"
       },
       {
         "type": "action",
-        "description": "Submit the profile changes"
+        "description": "Select a valid date range filter"
+      },
+      {
+        "type": "action",
+        "description": "Apply the filters"
       },
       {
         "type": "assertion",
-        "description": "Verify a profile update success confirmation is visible"
+        "description": "Verify the report results refresh based on the selected filters"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the filtered report shows a consistent set of rows for the selected date range"
       }
     ],
-    "priority": "High"
+    "priority": "Medium"
   },
   {
     "id": "TC014",
-    "title": "Admin dashboard renders KPIs, 7-day trend, and recent leaves",
-    "description": "Verifies an admin can access the dashboard and see KPI summaries, a 7-day attendance trend visualization, and a recent leave requests list.",
-    "category": "Admin Dashboard",
+    "title": "Create a new employee record",
+    "description": "Verifies an admin can create a new employee and then see the new employee in the employee list.",
+    "category": "Employee Management",
     "steps": [
       {
         "type": "action",
@@ -540,11 +608,11 @@
       },
       {
         "type": "action",
-        "description": "Fill in the email field with {{LOGIN_USER}}"
+        "description": "Fill {{LOGIN_USER}} into the email field"
       },
       {
         "type": "action",
-        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
       },
       {
         "type": "action",
@@ -552,24 +620,44 @@
       },
       {
         "type": "action",
-        "description": "Click the navigation link to the admin dashboard"
+        "description": "Navigate to /employees/create"
+      },
+      {
+        "type": "action",
+        "description": "Fill a unique full name into the name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a unique email into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid department"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid position"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid shift"
+      },
+      {
+        "type": "action",
+        "description": "Submit the employee form"
       },
       {
         "type": "assertion",
-        "description": "Verify KPI summary cards are displayed"
-      },
-      {
-        "type": "assertion",
-        "description": "Verify a 7-day attendance trend visualization and a recent leave requests list are displayed"
+        "description": "Verify the newly created employee appears in the employee list"
       }
     ],
     "priority": "Medium"
   },
   {
     "id": "TC015",
-    "title": "Monthly attendance report renders summary and details for a selected month",
-    "description": "Verifies an authenticated user can select a month/period on the reports page and see both a report summary and detail rows.",
-    "category": "Monthly Attendance Reports",
+    "title": "Add a company holiday",
+    "description": "Verifies an authenticated admin can add a new holiday with a valid date and name and then see it appear in the holidays list.",
+    "category": "Company Holidays Settings",
     "steps": [
       {
         "type": "action",
@@ -577,11 +665,11 @@
       },
       {
         "type": "action",
-        "description": "Fill in the email field with {{LOGIN_USER}}"
+        "description": "Fill {{LOGIN_USER}} into the email field"
       },
       {
         "type": "action",
-        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
       },
       {
         "type": "action",
@@ -589,28 +677,36 @@
       },
       {
         "type": "action",
-        "description": "Click the navigation link to the reports page"
+        "description": "Navigate to /settings/holidays"
       },
       {
         "type": "action",
-        "description": "Select a valid month or reporting period"
+        "description": "Initiate adding a new holiday"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid date into the holiday date field"
+      },
+      {
+        "type": "action",
+        "description": "Fill Holiday Automation 001 into the holiday name field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the holiday form"
       },
       {
         "type": "assertion",
-        "description": "Verify a monthly attendance report summary is displayed"
-      },
-      {
-        "type": "assertion",
-        "description": "Verify attendance detail rows are displayed"
+        "description": "Verify Holiday Automation 001 appears in the company holidays list"
       }
     ],
     "priority": "Medium"
   },
   {
     "id": "TC016",
-    "title": "Switching report months updates displayed report data",
-    "description": "Verifies changing the selected month/period updates the monthly report content shown on the page.",
-    "category": "Monthly Attendance Reports",
+    "title": "View leave policy list",
+    "description": "Verifies an authenticated admin can open leave policy settings and see the leave policy list render successfully.",
+    "category": "Leave Policy Settings",
     "steps": [
       {
         "type": "action",
@@ -618,11 +714,11 @@
       },
       {
         "type": "action",
-        "description": "Fill in the email field with {{LOGIN_USER}}"
+        "description": "Fill {{LOGIN_USER}} into the email field"
       },
       {
         "type": "action",
-        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
       },
       {
         "type": "action",
@@ -630,28 +726,20 @@
       },
       {
         "type": "action",
-        "description": "Click the navigation link to the reports page"
-      },
-      {
-        "type": "action",
-        "description": "Select a valid month or reporting period"
-      },
-      {
-        "type": "action",
-        "description": "Select a different valid month or reporting period"
+        "description": "Navigate to /settings/leave"
       },
       {
         "type": "assertion",
-        "description": "Verify the report summary and details update to reflect the newly selected period"
+        "description": "Verify the leave policy list is displayed"
       }
     ],
     "priority": "Medium"
   },
   {
     "id": "TC017",
-    "title": "Attendance submission requires captured photo",
-    "description": "Verifies the attendance form prevents submission when no photo is captured and shows a photo-required validation error.",
-    "category": "Attendance Management (Check-in / Check-out)",
+    "title": "Browse employees list with search and pagination",
+    "description": "Verifies an admin can browse the employee list, use search, and navigate results via pagination.",
+    "category": "Employee Management",
     "steps": [
       {
         "type": "action",
@@ -659,11 +747,11 @@
       },
       {
         "type": "action",
-        "description": "Fill in the email field with {{LOGIN_USER}}"
+        "description": "Fill {{LOGIN_USER}} into the email field"
       },
       {
         "type": "action",
-        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
       },
       {
         "type": "action",
@@ -671,28 +759,28 @@
       },
       {
         "type": "action",
-        "description": "Click the navigation link to open the attendance check-in/out page"
+        "description": "Navigate to /employees"
       },
       {
         "type": "action",
-        "description": "Select check-in"
+        "description": "Fill a partial name into the employee search field"
       },
       {
         "type": "action",
-        "description": "Submit attendance"
+        "description": "Navigate to a different results page using pagination controls"
       },
       {
         "type": "assertion",
-        "description": "Verify a validation error is visible indicating a photo is required"
+        "description": "Verify an employee list is displayed with results updated to match the search/pagination state"
       }
     ],
-    "priority": "Low"
+    "priority": "Medium"
   },
   {
     "id": "TC018",
-    "title": "Attendance submission is blocked without a captured photo",
-    "description": "Verifies the attendance page prevents check-in/out submission when no photo has been captured and shows a validation error.",
-    "category": "Daily Attendance",
+    "title": "View company holidays list",
+    "description": "Verifies an authenticated admin can open the company holidays settings page and see the holidays list render successfully.",
+    "category": "Company Holidays Settings",
     "steps": [
       {
         "type": "action",
@@ -700,11 +788,11 @@
       },
       {
         "type": "action",
-        "description": "Fill in the email field with {{LOGIN_USER}}"
+        "description": "Fill {{LOGIN_USER}} into the email field"
       },
       {
         "type": "action",
-        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
       },
       {
         "type": "action",
@@ -712,24 +800,20 @@
       },
       {
         "type": "action",
-        "description": "Click the navigation link to the attendance check-in/out page"
-      },
-      {
-        "type": "action",
-        "description": "Submit a check-in without capturing a photo"
+        "description": "Click the navigation link to company holidays settings"
       },
       {
         "type": "assertion",
-        "description": "Verify a photo-required validation error is visible"
+        "description": "Verify the company holidays list is displayed"
       }
     ],
-    "priority": "Low"
+    "priority": "Medium"
   },
   {
     "id": "TC019",
-    "title": "Profile password change blocks mismatched confirmation",
-    "description": "Verifies the profile form prevents saving when the new password and confirmation do not match and shows a mismatch validation error.",
-    "category": "Profile Management",
+    "title": "Edit an existing employee record",
+    "description": "Verifies an admin can update an employee’s details and sees the updated information reflected in the employee list.",
+    "category": "Employee Management",
     "steps": [
       {
         "type": "action",
@@ -737,11 +821,11 @@
       },
       {
         "type": "action",
-        "description": "Fill in the email field with {{LOGIN_USER}}"
+        "description": "Fill {{LOGIN_USER}} into the email field"
       },
       {
         "type": "action",
-        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
       },
       {
         "type": "action",
@@ -749,32 +833,64 @@
       },
       {
         "type": "action",
-        "description": "Click the navigation link to open the user profile page"
+        "description": "Navigate to /employees/create"
       },
       {
         "type": "action",
-        "description": "Fill a valid value into the new password field"
+        "description": "Fill a unique full name into the name field"
       },
       {
         "type": "action",
-        "description": "Fill a different valid value into the confirm password field"
+        "description": "Fill a unique email into the email field"
       },
       {
         "type": "action",
-        "description": "Submit the profile changes"
+        "description": "Select a valid department"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid position"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid shift"
+      },
+      {
+        "type": "action",
+        "description": "Submit the employee form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /employees"
+      },
+      {
+        "type": "action",
+        "description": "Search for the newly created employee by email"
+      },
+      {
+        "type": "action",
+        "description": "Open the employee for editing"
+      },
+      {
+        "type": "action",
+        "description": "Fill an updated full name into the name field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the employee changes"
       },
       {
         "type": "assertion",
-        "description": "Verify a password mismatch validation error is visible"
+        "description": "Verify the employee list shows the employee with updated details"
       }
     ],
-    "priority": "Low"
+    "priority": "Medium"
   },
   {
     "id": "TC020",
-    "title": "Profile password mismatch shows validation error",
-    "description": "Verifies the profile password change prevents saving when the new password and confirmation do not match and shows a validation error.",
-    "category": "Profile Management",
+    "title": "Edit a leave policy",
+    "description": "Verifies an authenticated admin can edit an existing leave policy and see the updated policy reflected in the list.",
+    "category": "Leave Policy Settings",
     "steps": [
       {
         "type": "action",
@@ -782,11 +898,11 @@
       },
       {
         "type": "action",
-        "description": "Fill in the email field with {{LOGIN_USER}}"
+        "description": "Fill {{LOGIN_USER}} into the email field"
       },
       {
         "type": "action",
-        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
       },
       {
         "type": "action",
@@ -794,64 +910,193 @@
       },
       {
         "type": "action",
-        "description": "Click the navigation link to the profile page"
+        "description": "Navigate to /settings/leave"
       },
       {
         "type": "action",
-        "description": "Fill a valid new password into the new password field"
+        "description": "Initiate adding a new leave policy"
       },
       {
         "type": "action",
-        "description": "Fill a different valid password into the password confirmation field"
+        "description": "Fill Leave Policy Automation 002 into the policy name field"
       },
       {
         "type": "action",
-        "description": "Submit the password change"
+        "description": "Select a valid leave type for the policy"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid quota value into the quota field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the leave policy form"
+      },
+      {
+        "type": "action",
+        "description": "Select the policy Leave Policy Automation 002 from the list"
+      },
+      {
+        "type": "action",
+        "description": "Initiate editing the selected leave policy"
+      },
+      {
+        "type": "action",
+        "description": "Fill Leave Policy Automation 002 Updated into the policy name field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the leave policy edit form"
       },
       {
         "type": "assertion",
-        "description": "Verify a password mismatch validation error is visible"
+        "description": "Verify Leave Policy Automation 002 Updated appears in the leave policy list"
       }
     ],
-    "priority": "Low"
+    "priority": "Medium"
   },
   {
     "id": "TC021",
-    "title": "Registration requires password",
-    "description": "Verifies the registration form blocks account creation when the password is missing and shows a required-field validation error.",
-    "category": "User Authentication",
+    "title": "Edit an existing company holiday",
+    "description": "Verifies an authenticated admin can edit an existing holiday and see the updated values reflected in the holidays list.",
+    "category": "Company Holidays Settings",
     "steps": [
       {
         "type": "action",
-        "description": "Navigate to /register"
+        "description": "Navigate to /login"
       },
       {
         "type": "action",
-        "description": "Fill in the name field with Test Employee"
+        "description": "Fill {{LOGIN_USER}} into the email field"
       },
       {
         "type": "action",
-        "description": "Fill in the email field with a newly generated unique email"
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
       },
       {
         "type": "action",
-        "description": "Fill in the password field with an empty value"
+        "description": "Submit the login form"
       },
       {
         "type": "action",
-        "description": "Submit the registration form"
+        "description": "Navigate to /settings/holidays"
+      },
+      {
+        "type": "action",
+        "description": "Initiate adding a new holiday"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid date into the holiday date field"
+      },
+      {
+        "type": "action",
+        "description": "Fill Holiday Automation 002 into the holiday name field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the holiday form"
+      },
+      {
+        "type": "action",
+        "description": "Select the holiday Holiday Automation 002 from the list"
+      },
+      {
+        "type": "action",
+        "description": "Initiate editing the selected holiday"
+      },
+      {
+        "type": "action",
+        "description": "Fill Holiday Automation 002 Updated into the holiday name field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the holiday edit form"
       },
       {
         "type": "assertion",
-        "description": "Verify a password required validation error is visible"
+        "description": "Verify Holiday Automation 002 Updated appears in the company holidays list"
       }
     ],
-    "priority": "Low"
+    "priority": "Medium"
   },
   {
     "id": "TC022",
-    "title": "Leave request requires dates",
-    "description": "Verifies the leave request form blocks submission when required date fields are empty and shows validation feedback.",
+    "title": "Delete an employee record",
+    "description": "Verifies an admin can delete an employee and the employee no longer appears in the employee list.",
+    "category": "Employee Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /employees/create"
+      },
+      {
+        "type": "action",
+        "description": "Fill a unique full name into the name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a unique email into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid department"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid position"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid shift"
+      },
+      {
+        "type": "action",
+        "description": "Submit the employee form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /employees"
+      },
+      {
+        "type": "action",
+        "description": "Search for the newly created employee by email"
+      },
+      {
+        "type": "action",
+        "description": "Initiate deleting the employee"
+      },
+      {
+        "type": "action",
+        "description": "Confirm the delete action in the app confirmation UI"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the employee no longer appears in the employee list"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC023",
+    "title": "Leave request creation requires a date range",
+    "description": "Verifies submitting a leave request without a date range is blocked and a validation error is shown.",
     "category": "Leave Request Management",
     "steps": [
       {
@@ -860,6 +1105,181 @@
       },
       {
         "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to leave requests"
+      },
+      {
+        "type": "action",
+        "description": "Click the action to create a new leave request"
+      },
+      {
+        "type": "action",
+        "description": "Select a leave type"
+      },
+      {
+        "type": "action",
+        "description": "Fill Test leave reason into the reason field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the leave request form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a date range validation error is visible"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC024",
+    "title": "Delete a company holiday",
+    "description": "Verifies an authenticated admin can delete an existing holiday and it no longer appears in the holidays list.",
+    "category": "Company Holidays Settings",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /settings/holidays"
+      },
+      {
+        "type": "action",
+        "description": "Initiate adding a new holiday"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid date into the holiday date field"
+      },
+      {
+        "type": "action",
+        "description": "Fill Holiday Automation 003 into the holiday name field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the holiday form"
+      },
+      {
+        "type": "action",
+        "description": "Select the holiday Holiday Automation 003 from the list"
+      },
+      {
+        "type": "action",
+        "description": "Initiate deleting the selected holiday"
+      },
+      {
+        "type": "action",
+        "description": "Confirm the delete action"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify Holiday Automation 003 is not shown in the company holidays list"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC025",
+    "title": "Delete a leave policy",
+    "description": "Verifies an authenticated admin can delete an existing leave policy and it no longer appears in the policy list.",
+    "category": "Leave Policy Settings",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /settings/leave"
+      },
+      {
+        "type": "action",
+        "description": "Initiate adding a new leave policy"
+      },
+      {
+        "type": "action",
+        "description": "Fill Leave Policy Automation 003 into the policy name field"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid leave type for the policy"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid quota value into the quota field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the leave policy form"
+      },
+      {
+        "type": "action",
+        "description": "Select the policy Leave Policy Automation 003 from the list"
+      },
+      {
+        "type": "action",
+        "description": "Initiate deleting the selected leave policy"
+      },
+      {
+        "type": "action",
+        "description": "Confirm the delete action"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify Leave Policy Automation 003 is not shown in the leave policy list"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC026",
+    "title": "Clear report filters to return to default results",
+    "description": "User clears applied filters and the report returns to the default unfiltered view.",
+    "category": "Reports and Analytics",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
         "description": "Fill in the email field with {{LOGIN_USER}}"
       },
       {
@@ -872,19 +1292,302 @@
       },
       {
         "type": "action",
-        "description": "Click the navigation link to the leave page"
+        "description": "Click the navigation link to open reports"
       },
       {
         "type": "action",
-        "description": "Fill a reason into the leave reason field"
+        "description": "Select a valid date range filter"
       },
       {
         "type": "action",
-        "description": "Submit the leave request"
+        "description": "Apply the filters"
+      },
+      {
+        "type": "action",
+        "description": "Clear all filters"
       },
       {
         "type": "assertion",
-        "description": "Verify a required-date validation error is visible"
+        "description": "Verify the report results return to the default unfiltered state"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC027",
+    "title": "Validate email format on profile update",
+    "description": "User enters an invalid email format and cannot save profile changes, and an email validation error is shown.",
+    "category": "Profile Editing",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to open the user profile"
+      },
+      {
+        "type": "action",
+        "description": "Fill an invalid email format into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Submit profile changes"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an email validation error is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the profile changes are not saved"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC028",
+    "title": "Remember-me keeps the user signed in after reload",
+    "description": "Verifies selecting remember-me keeps the session active after a page reload and the dashboard remains accessible.",
+    "category": "User Login",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Select the remember me option"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Refresh the page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user still sees the dashboard"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC029",
+    "title": "View masked LINE credentials",
+    "description": "Verifies an authenticated admin-config user can open LINE integration settings and the credential values are masked by default.",
+    "category": "LINE Integration Settings",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /settings/line"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the LINE credential fields are displayed in a masked state"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC030",
+    "title": "Update LINE credentials",
+    "description": "Verifies an authenticated admin-config user can change LINE credential values, save, and see the updated masked values persist on the page.",
+    "category": "LINE Integration Settings",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /settings/line"
+      },
+      {
+        "type": "action",
+        "description": "Fill LINE_SECRET_AUTOMATION_001 into the Channel Secret field"
+      },
+      {
+        "type": "action",
+        "description": "Fill LINE_TOKEN_AUTOMATION_001 into the Channel Access Token field"
+      },
+      {
+        "type": "action",
+        "description": "Save LINE settings"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a success confirmation is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC031",
+    "title": "Block login when email format is invalid",
+    "description": "Verifies the login form prevents submission with an invalid email format and shows an email validation error.",
+    "category": "User Login",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill invalid-email-format into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill any-password into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an email validation error is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC032",
+    "title": "Holiday date is required when adding holiday",
+    "description": "Verifies the add holiday form prevents saving when the date is missing and shows a date validation error.",
+    "category": "Company Holidays Settings",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /settings/holidays"
+      },
+      {
+        "type": "action",
+        "description": "Initiate adding a new holiday"
+      },
+      {
+        "type": "action",
+        "description": "Leave the holiday date field empty"
+      },
+      {
+        "type": "action",
+        "description": "Fill Holiday Automation Missing Date into the holiday name field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the holiday form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a date validation error is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC033",
+    "title": "Reveal LINE credentials",
+    "description": "Verifies an authenticated admin-config user can toggle visibility to reveal both LINE credential values on the settings page.",
+    "category": "LINE Integration Settings",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /settings/line"
+      },
+      {
+        "type": "action",
+        "description": "Toggle visibility for the Channel Secret field"
+      },
+      {
+        "type": "action",
+        "description": "Toggle visibility for the Channel Access Token field"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the LINE credential fields are displayed in a revealed state"
       }
     ],
     "priority": "Low"

@@ -3,18 +3,21 @@
   "type": "frontend",
   "scope": "codebase",
   "localEndpoint": "http://localhost:8000",
-  "loginUser": "admin@cfarm.co.th",
+  "loginUser": "admin@chuwitfarm.com",
   "loginPassword": "password",
   "executionArgs": {
     "projectName": "CFARM_HR",
     "projectPath": "d:\\CFARM_HR",
-    "testIds": [],
-    "additionalInstruction": "Use admin credentials: admin@cfarm.co.th / password. The application is running on http://127.0.0.1:8000. Use production mode (Vite assets have been built).",
-    "serverMode": "production",
+    "testIds": [
+      "TC004",
+      "TC005"
+    ],
+    "additionalInstruction": "Use email admin@chuwitfarm.com and password: password to login. After login you will land on the admin dashboard. For TC004 (create leave request): navigate to the leave section via sidebar menu, click create new leave request, select leave type, fill dates using YYYY-MM-DD format, enter reason, and submit. For TC005 (approve leave): navigate to leave approvals page via sidebar, find a pending leave request, and click approve.",
+    "serverMode": "development",
     "envs": {
       "API_KEY": "sk-user-Z5wBiqHUF2KQGpOC7-GscM0p5MRCuLU0PW_vucaf6SZo5qLfPrKCHlRO7y5hw_A_LNj1N2kK-RBfQ0yIQh7ahqngc3ouQLIpgNycpdp0az7R-1ALPyEYYvg_r55DG063zB8"
     }
   },
-  "serverPort": 54181,
-  "proxy": "http://b89caa3f-04ba-46f7-8d1a-95c8c866fc8b:F5OarvujJ6uwB3nX1veUyS1a4kP1Rvpm@tun.testsprite.com:8080"
+  "serverPort": 27191,
+  "proxy": "http://37162175-6d4a-4944-980b-adf7ffd40f41:OJuhxGK5WBI4ErunQgYCvMIc8jboMZrE@tun.testsprite.com:8080"
 }

@@ -59,6 +59,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/reports/leaves', [ReportController::class, 'leaves'])->name('reports.leaves');
         Route::get('/reports/leaves/export', [ReportController::class, 'exportLeaves'])->name('reports.leaves.export');
 
+        // Settings Hub
+        Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+
         // Settings - Leave Policies CRUD
         Route::get('/settings/leave', [SettingController::class, 'leaveSettings'])->name('settings.leave');
         Route::post('/settings/leave/policies', [SettingController::class, 'storePolicy'])->name('settings.leave.store');

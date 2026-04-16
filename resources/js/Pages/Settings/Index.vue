@@ -1,0 +1,128 @@
+<script setup>
+import { Head, Link } from '@inertiajs/vue3';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+
+const settingsGroups = [
+    {
+        title: 'การจัดการบุคลากร',
+        description: 'ตั้งค่าเกี่ยวกับพนักงานและโครงสร้างองค์กร',
+        color: 'from-blue-500 to-indigo-600',
+        shadow: 'shadow-blue-200',
+        items: [
+            {
+                name: 'นโยบายการลา',
+                description: 'กำหนดประเภทการลา จำนวนวันลา และเงื่อนไขต่างๆ',
+                icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01',
+                route: 'settings.leave',
+                badge: null,
+            },
+            {
+                name: 'วันหยุดบริษัท',
+                description: 'กำหนดวันหยุดประจำปีและวันหยุดนักขัตฤกษ์',
+                icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',
+                route: 'settings.holidays',
+                badge: null,
+            },
+        ],
+    },
+    {
+        title: 'การเชื่อมต่อระบบภายนอก',
+        description: 'ตั้งค่าระบบแจ้งเตือนและการเชื่อมต่อแพลตฟอร์มอื่น',
+        color: 'from-emerald-500 to-teal-600',
+        shadow: 'shadow-emerald-200',
+        items: [
+            {
+                name: 'LINE Messaging API',
+                description: 'เชื่อมต่อ LINE เพื่อแจ้งเตือนและอนุมัติการลาผ่านแชท',
+                icon: 'M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z',
+                route: 'settings.line',
+                badge: 'LINE',
+            },
+        ],
+    },
+];
+</script>
+
+<template>
+    <Head title="ตั้งค่าระบบ" />
+
+    <AuthenticatedLayout>
+        <template #header>
+            <div class="flex items-center gap-4">
+                <span class="p-3 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl shadow-lg shadow-emerald-200">
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                </span>
+                <div>
+                    <h2 class="font-bold text-2xl text-slate-800 leading-tight">ตั้งค่าระบบ</h2>
+                    <p class="text-sm text-slate-500 mt-0.5">จัดการการตั้งค่าและกำหนดค่าทั้งหมดของระบบ HR</p>
+                </div>
+            </div>
+        </template>
+
+        <div class="py-10">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-10">
+
+                <div v-for="(group, gi) in settingsGroups" :key="gi">
+                    <!-- Group Header -->
+                    <div class="flex items-center gap-3 mb-5 px-1">
+                        <div class="w-1.5 h-8 rounded-full bg-gradient-to-b" :class="group.color"></div>
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-800">{{ group.title }}</h3>
+                            <p class="text-sm text-slate-500">{{ group.description }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Cards Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                        <Link
+                            v-for="(item, ii) in group.items"
+                            :key="ii"
+                            :href="route(item.route)"
+                            class="group relative bg-white/80 backdrop-blur-lg rounded-2xl border border-slate-200/60 p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 hover:border-slate-300/80"
+                        >
+                            <!-- Badge -->
+                            <span
+                                v-if="item.badge"
+                                class="absolute top-4 right-4 text-[10px] font-black tracking-widest uppercase px-2.5 py-1 rounded-full bg-gradient-to-r"
+                                :class="{
+                                    'from-green-400 to-green-500 text-white': item.badge === 'LINE',
+                                    'from-blue-400 to-blue-500 text-white': item.badge !== 'LINE',
+                                }"
+                            >
+                                {{ item.badge }}
+                            </span>
+
+                            <!-- Icon -->
+                            <div
+                                class="w-14 h-14 rounded-2xl flex items-center justify-center mb-4 bg-gradient-to-br shadow-lg transition-transform duration-300 group-hover:scale-110"
+                                :class="[group.color, group.shadow]"
+                            >
+                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="item.icon"></path>
+                                </svg>
+                            </div>
+
+                            <!-- Text -->
+                            <h4 class="text-base font-bold text-slate-800 mb-1 group-hover:text-emerald-700 transition-colors">
+                                {{ item.name }}
+                            </h4>
+                            <p class="text-sm text-slate-500 leading-relaxed">
+                                {{ item.description }}
+                            </p>
+
+                            <!-- Arrow -->
+                            <div class="absolute bottom-5 right-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                </svg>
+                            </div>
+                        </Link>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </AuthenticatedLayout>
+</template>
